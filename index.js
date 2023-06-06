@@ -14,13 +14,10 @@ function getHMISettings(){
         'general_layout_no' : store.get(project_prefix+'general_layout_no', '2')
     };
 }
-let currentUser={'id':0,'name':'Amazon Operator','role':0}
-let currentMenu= {'file':'general','title':'General View','name':'general','members':'general general_conveyors'};
-
 let basic_info={
     "connected":false,
-    "currentUser":currentUser,
-    'currentMenu':currentMenu,
+    "currentUser":{'id':0,'name':'Amazon Operator','role':0},
+    'currentMenu':{'file':'general','title':'General View','name':'general','members':'general general_conveyors'},
     'selectedMachineId':0,
     'pageParams':{},
     'hmiSettings':getHMISettings()
@@ -75,14 +72,18 @@ const createWindow = () => {
         }
     });
     ejse.data('system_general_layout_no',basic_info['hmiSettings']['general_layout_no'])
-    ejse.data('system_current_page_file','general')
-    mainWindow.loadFile('index.ejs').then(function (){
-        //connectWithServer();
-    });
+    ejse.data('system_current_page_file',basic_info['currentMenu']['file'])
+    mainWindow.loadFile('index.ejs').then(function (){});
 };
-ipcMain.on("sendRequestToIpcMain", function(e, responseName,params) {
+ipcMain.on("sendRequestToIpcMain", function(e, responseName,params={}) {
     if(responseName=='basic_info'){
         mainWindow.webContents.send(responseName,basic_info);
+    }
+    else if(responseName=='changeMenu'){
+        basic_info['currentMenu']=params;
+        ejse.data('system_current_page_file',basic_info['currentMenu']['file'])
+        mainWindow.loadFile('index.ejs').then(function (){});
+
     }
     // else if(responseName=='saveSettings'){
     //     //mainWindow.webContents.send(responseName,basicInfo);
