@@ -14,8 +14,17 @@ function getHMISettings(){
         'general_layout_no' : store.get(project_prefix+'general_layout_no', '2')
     };
 }
-currentUser={'id':0,'name':'Amazon Operator','role':0}
-let basic_info={"connected":false,"currentUser":currentUser,hmiSettings:getHMISettings()}
+let currentUser={'id':0,'name':'Amazon Operator','role':0}
+let currentMenu= {'file':'general','title':'General View','name':'general','members':'general general_conveyors'};
+
+let basic_info={
+    "connected":false,
+    "currentUser":currentUser,
+    'currentMenu':currentMenu,
+    'selectedMachineId':0,
+    'pageParams':{},
+    'hmiSettings':getHMISettings()
+}
 let mainWindow;
 let nativeMenus = [
     {
@@ -71,6 +80,26 @@ const createWindow = () => {
         //connectWithServer();
     });
 };
+ipcMain.on("sendRequestToIpcMain", function(e, responseName,params) {
+    if(responseName=='basic_info'){
+        mainWindow.webContents.send(responseName,basic_info);
+    }
+    // else if(responseName=='saveSettings'){
+    //     //mainWindow.webContents.send(responseName,basicInfo);
+    //     let project_prefix='adta_';
+    //     store.set(project_prefix+"java_server_ip_address", params['java_server_ip_address']);
+    //     store.set(project_prefix+"java_server_port", params['java_server_port']);
+    //     store.set(project_prefix+"cm_ip_address", params['cm_ip_address']);
+    //     store.set(project_prefix+"detailed_active_alarm", params['detailed_active_alarm']);
+    //     store.set(project_prefix+"motor_speed_unit", params['motor_speed_unit']);
+    //     store.set(project_prefix+"general_layout_no", params['general_layout_no']);
+    //     ejse.data('system_general_layout_no',params['general_layout_no'])
+    //     //if needed to handle
+    //     basicInfo['hmiSettings']=getHMISettings();
+    //     mainWindow.webContents.send('basicInfo',basicInfo);
+    // }
+
+})
 app.whenReady().then(() => {
     createWindow()
 })
