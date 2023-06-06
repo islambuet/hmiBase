@@ -1,0 +1,58 @@
+/*header*/
+.container-fluid{
+    width: 1850px;
+}
+
+.menu,#btn_logout {
+    color: #2780E3;
+    background-color: #f8f9fa;
+}
+.menu:hover,#btn_logout:hover {
+    background-color: #dae0e5;
+}
+.menu.active{
+    color: #fff;
+    background-color: #2780E3;
+}
+/*header*/
+#system_content{
+    margin-bottom: 50px;
+}
+
+button.button-3d{
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none !important;
+    box-shadow: 0 8px 4px darkslategray;
+    background-color: #27e22b;
+}
+button.button-3d:active {
+    /*background-color: #4d80ff;*/
+    box-shadow: 0 0 2px darkslategray;
+    transform: translateY(5px);
+}
+
+button.button-rectangle{
+    border-radius: 5%;
+    width: 115px;
+    font-size: 20px;
+    background-color: #4274D7;
+    color: #fff;
+}
+
+button.button-round{
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background-color: white;
+}
