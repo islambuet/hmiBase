@@ -61,11 +61,12 @@ const createWindow = () => {
         y:0,
         webPreferences: {
             nodeIntegration: true,
-            devTools: true
+            contextIsolation: false,
+            devTools: true,
         }
     });
     ejse.data('system_general_layout_no',basic_info['hmiSettings']['general_layout_no'])
-    ejse.data('system_current_page','general')
+    ejse.data('system_current_page_file','general')
     mainWindow.loadFile('index.ejs').then(function (){
         //connectWithServer();
     });
