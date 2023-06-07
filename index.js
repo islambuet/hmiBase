@@ -30,7 +30,7 @@ function getHMISettings(){
     return {
         'java_server_ip_address' : store.get(project_prefix+'java_server_ip_address', '127.0.0.1'),
         'java_server_port' : store.get(project_prefix+'java_server_port', '28001'),
-        'cm_ip_address' :  store.get(project_prefix+'cm_ip_address', ''),
+        'cm_ip_address' :  store.get(project_prefix+'cm_ip_address', '192.168.179.1'),
         'detailed_active_alarm' : store.get(project_prefix+'detailed_active_alarm', '0'),
         'motor_speed_unit' : store.get(project_prefix+'motor_speed_unit', 'm_s'),
         'general_layout_no' : store.get(project_prefix+'general_layout_no', '2')
@@ -104,6 +104,12 @@ ipcMain.on("sendRequestToIpcMain", function(e, responseName,params={}) {
     }
     else if(responseName=='changeMenu'){
         basic_info['currentMenu']=params;
+        ejse.data('system_current_page_file',basic_info['currentMenu']['file'])
+        mainWindow.loadFile('index.ejs').then(function (){});
+
+    }
+    else if(responseName=='changeSelectedMachine'){
+        basic_info['selectedMachineId']=params['machine_id'];
         ejse.data('system_current_page_file',basic_info['currentMenu']['file'])
         mainWindow.loadFile('index.ejs').then(function (){});
 
@@ -207,6 +213,11 @@ function processReceivedJsonObjects(jsonObject) {
     if(request=='basic_info'){
         for(let key in jsonObject['data']){
             basic_info[key]=jsonObject['data'][key];
+        }
+        for(let key in basic_info['machines']){
+            if(basic_info['hmiSettings']['cm_ip_address']==basic_info['machines'][key]['maintenance_gui_ip']){
+                basic_info['selectedMachineId']=basic_info['machines'][key]['machine_id'];
+            }
         }
         // let doors={}
         // for(let key in basicInfo['inputsInfo']){

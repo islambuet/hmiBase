@@ -18,6 +18,9 @@ $(document).on('click','.menu',function (event){
     let members=$(this).attr('data-members');
     ipcRenderer.send("sendRequestToIpcMain", "changeMenu",{'file':file,'title':title,'name':name,'members':members});
 })
+$(document).on('change','#system_machine_list',function (event){
+    ipcRenderer.send("sendRequestToIpcMain", "changeSelectedMachine",{'machine_id':$(this).val()});
+});
 $(document).ready(function ()
 {
     //start clock
@@ -51,6 +54,12 @@ ipcRenderer.on("basic_info", function(e, data) {
     }
     if(basic_info['connected']){
         $("#system_machine_status").css("color", "#0000FF");
+        if(basic_info['machines']){
+            for(let key in basic_info['machines']){
+                $('#system_machine_list').append('<option value="'+basic_info['machines'][key]['machine_id']+'">'+basic_info['machines'][key]['machine_name']+'</option>');
+            }
+            $("#system_machine_list").val(basic_info['selectedMachineId']);
+        }
         if(basic_info['selectedMachineId']>0){
             let requestData=[
                 {'name':'machine_mode','params':{}},
