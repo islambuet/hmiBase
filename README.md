@@ -4,6 +4,7 @@
     npm install ejs-electron
     npm install jquery --save #need to use jQuery. Manual jQuery does not work
     npm i electron-store
+    npm install log4js
 # how to build exe
 # tutorial link
     https://www.youtube.com/watch?v=N-3s3ezYd8g&t=31315s
