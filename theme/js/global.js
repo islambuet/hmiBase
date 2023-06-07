@@ -4,7 +4,7 @@
 // ---------------
 
 const {ipcRenderer} = require('electron');
-let basicInfo={};
+let basic_info={};
 
 function startClock(){
     let now=new Date();
@@ -26,9 +26,9 @@ $(document).ready(function ()
     ipcRenderer.send("sendRequestToIpcMain", "basic_info");
 });
 ipcRenderer.on("basic_info", function(e, data) {
-    basicInfo=data;
+    basic_info=data;
     //setting page title
-    let currentMenu=basicInfo['currentMenu'];
+    let currentMenu=basic_info['currentMenu'];
     $('title').text(version+currentMenu['title'])
     //setting active menu
     let members=currentMenu['members'].split(" ");
@@ -37,9 +37,8 @@ ipcRenderer.on("basic_info", function(e, data) {
             $('.menu[data-name='+members[i]+']').addClass('active')
         }
     }
-
     //currentUser
-    let currentUser=basicInfo['currentUser'];
+    let currentUser=basic_info['currentUser'];
     $('#system_user_name').text(currentUser['name'])
 
     if(currentUser['role']>0){
@@ -50,7 +49,30 @@ ipcRenderer.on("basic_info", function(e, data) {
         jQuery("#menu_login").show();
         jQuery("#menu_logout").hide();
     }
+    if(basic_info['connected']){
+        $("#system_machine_status").css("color", "#0000FF");
+        if(basic_info['selectedMachineId']>0){
+            let requestData=[
+                {'name':'machine_mode','params':{}},
+                {'name':'disconnected_device_counter','params':{}},
+                {'name':'active_alarms','params':{}}
+            ];
+            ipcRenderer.send("sendRequestToServer", "getCommonStatus",{},requestData);//send request now
+            setInterval(() => {ipcRenderer.send("sendRequestToServer", "getCommonStatus",{},requestData);}, 2000);
+        }
+    }
     if (typeof systemPageLoaded === 'function') {
         systemPageLoaded();
     }
+})
+ipcRenderer.on("getCommonStatus", function(e, jsonObject) {
+    console.log(jsonObject)
+    let disconnected_device_counter = Number(jsonObject['data']['disconnected_device_counter']);
+    if(disconnected_device_counter != 0) {
+        $("#system_machine_status").css("color", "#FFBF00");
+    }
+    else {
+        $("#system_machine_status").css("color", "#32CD32");
+    }
+
 })
