@@ -84,7 +84,6 @@ ipcRenderer.on("basic_info", function(e, data) {
     }
 })
 ipcRenderer.on("getCommonStatus", function(e, jsonObject) {
-    console.log(jsonObject)
     let disconnected_device_counter = Number(jsonObject['data']['disconnected_device_counter']);
     if(disconnected_device_counter != 0) {
         $("#system_machine_status").css("color", "#FFBF00");

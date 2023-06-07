@@ -28,9 +28,9 @@ log4js.configure(loggerConfig);
 function getHMISettings(){
     let project_prefix='adta_';
     return {
-        'java_server_ip_address' : store.get(project_prefix+'java_server_ip_address', '127.0.0.1'),
-        'java_server_port' : store.get(project_prefix+'java_server_port', '28001'),
-        'cm_ip_address' :  store.get(project_prefix+'cm_ip_address', '192.168.179.1'),
+        'java_server_ip_address' : store.get(project_prefix+'java_server_ip_address', ''),
+        'java_server_port' : store.get(project_prefix+'java_server_port', ''),
+        'cm_ip_address' :  store.get(project_prefix+'cm_ip_address', ''),
         'detailed_active_alarm' : store.get(project_prefix+'detailed_active_alarm', '0'),
         'motor_speed_unit' : store.get(project_prefix+'motor_speed_unit', 'm_s'),
         'general_layout_no' : store.get(project_prefix+'general_layout_no', '2')
@@ -53,7 +53,9 @@ let nativeMenus = [
             {
                 label: 'Settings',
                 click() {
-                    console.log("settings");
+                    basic_info['currentMenu']={'file':'settings','title':'Settings','name':'settings','members':''};
+                    ejse.data('system_current_page_file',basic_info['currentMenu']['file'])
+                    mainWindow.loadFile('index.ejs').then(function (){});
                 }
             },
             {
@@ -114,20 +116,19 @@ ipcMain.on("sendRequestToIpcMain", function(e, responseName,params={}) {
         mainWindow.loadFile('index.ejs').then(function (){});
 
     }
-    // else if(responseName=='saveSettings'){
-    //     //mainWindow.webContents.send(responseName,basicInfo);
-    //     let project_prefix='adta_';
-    //     store.set(project_prefix+"java_server_ip_address", params['java_server_ip_address']);
-    //     store.set(project_prefix+"java_server_port", params['java_server_port']);
-    //     store.set(project_prefix+"cm_ip_address", params['cm_ip_address']);
-    //     store.set(project_prefix+"detailed_active_alarm", params['detailed_active_alarm']);
-    //     store.set(project_prefix+"motor_speed_unit", params['motor_speed_unit']);
-    //     store.set(project_prefix+"general_layout_no", params['general_layout_no']);
-    //     ejse.data('system_general_layout_no',params['general_layout_no'])
-    //     //if needed to handle
-    //     basicInfo['hmiSettings']=getHMISettings();
-    //     mainWindow.webContents.send('basicInfo',basicInfo);
-    // }
+    else if(responseName=='saveSettings'){
+        let project_prefix='adta_';
+        store.set(project_prefix+"java_server_ip_address", params['java_server_ip_address']);
+        store.set(project_prefix+"java_server_port", params['java_server_port']);
+        store.set(project_prefix+"cm_ip_address", params['cm_ip_address']);
+        store.set(project_prefix+"detailed_active_alarm", params['detailed_active_alarm']);
+        store.set(project_prefix+"motor_speed_unit", params['motor_speed_unit']);
+        store.set(project_prefix+"general_layout_no", params['general_layout_no']);
+        ejse.data('system_general_layout_no',params['general_layout_no'])
+        // //if needed to handle
+        basic_info['hmiSettings']=getHMISettings();
+        // mainWindow.webContents.send('basicInfo',basicInfo);
+    }
 
 })
 let clientSocket = new net.Socket();
