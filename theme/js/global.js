@@ -61,6 +61,10 @@ ipcRenderer.on("basic_info", function(e, data) {
             $("#system_machine_list").val(basic_info['selectedMachineId']);
         }
         if(basic_info['selectedMachineId']>0){
+            $('#system_machine_name').text(basic_info['machines'][basic_info['selectedMachineId']]['machine_name']);
+            $('#system_machine_ip_address').text(basic_info['machines'][basic_info['selectedMachineId']]['ip_address']);
+            $('.system_machine_info').hide();
+            $('.system_machine_info[data-selected=1]').show();
             let requestData=[
                 {'name':'machine_mode','params':{}},
                 {'name':'disconnected_device_counter','params':{}},
@@ -68,6 +72,11 @@ ipcRenderer.on("basic_info", function(e, data) {
             ];
             ipcRenderer.send("sendRequestToServer", "getCommonStatus",{},requestData);//send request now
             setInterval(() => {ipcRenderer.send("sendRequestToServer", "getCommonStatus",{},requestData);}, 2000);
+        }
+        else{
+            $('.system_machine_info').hide();
+            $('.system_machine_info[data-selected=0]').show();
+
         }
     }
     if (typeof systemPageLoaded === 'function') {
@@ -82,6 +91,12 @@ ipcRenderer.on("getCommonStatus", function(e, jsonObject) {
     }
     else {
         $("#system_machine_status").css("color", "#32CD32");
+    }
+    if(jsonObject['data']['machine_mode'] == 1) {
+        $('.system_machine_info').css('background-color','#d3d3d3').css('color','#FFF');
+    }
+    else if(jsonObject['data']['machine_mode'] == 0) {
+        $('.system_machine_info').css('background-color','#2780E3').css('color','#FFF');
     }
 
 })

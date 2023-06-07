@@ -151,6 +151,7 @@ function connectClientSocketHandler() {
 function closeClientSocketHandler () {
     if(basic_info['connected']){
         basic_info['connected']=false;
+        basic_info['selectedMachineId']=0;
         logger.error(new Date().toString(),":DisConnected with JavaServer");
         //Reload page because of disconnected or only change the disconnect notification
         mainWindow.loadFile('index.ejs').then(function (){});
