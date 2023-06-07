@@ -16,10 +16,10 @@ $(document).on('click','.menu',function (event){
     let title=$(this).attr('data-title');
     let name=$(this).attr('data-name');
     let members=$(this).attr('data-members');
-    ipcRenderer.send("sendRequestToIpcMain", "changeMenu",{'file':file,'title':title,'name':name,'members':members});
+    ipcRenderer.send("sendRequestToIpcMain", "changeMenu",{'currentMenu':{'file':file,'title':title,'name':name,'members':members},'pageParams':basic_info['pageParams']});
 })
 $(document).on('change','#system_machine_list',function (event){
-    ipcRenderer.send("sendRequestToIpcMain", "changeSelectedMachine",{'machine_id':$(this).val()});
+    ipcRenderer.send("sendRequestToIpcMain", "changeMenu",{'selectedMachineId':$(this).val()});
 });
 $(document).ready(function ()
 {

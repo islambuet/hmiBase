@@ -53,9 +53,7 @@ let nativeMenus = [
             {
                 label: 'Settings',
                 click() {
-                    basic_info['currentMenu']={'file':'settings','title':'Settings','name':'settings','members':''};
-                    ejse.data('system_current_page_file',basic_info['currentMenu']['file'])
-                    mainWindow.loadFile('index.ejs').then(function (){});
+                    changeMenu({'currentMenu':{'file':'settings','title':'Settings','name':'settings','members':''}})
                 }
             },
             {
@@ -100,21 +98,20 @@ const createWindow = () => {
     ejse.data('system_current_page_file',basic_info['currentMenu']['file'])
     mainWindow.loadFile('index.ejs').then(function (){ connectWithServer()});
 };
+function changeMenu(params){
+    console.log(params)
+    for(let key in params){
+        basic_info[key]=params[key];
+    }
+    ejse.data('system_current_page_file',basic_info['currentMenu']['file'])
+    mainWindow.loadFile('index.ejs').then(function (){});
+}
 ipcMain.on("sendRequestToIpcMain", function(e, responseName,params={}) {
     if(responseName=='basic_info'){
         mainWindow.webContents.send(responseName,basic_info);
     }
     else if(responseName=='changeMenu'){
-        basic_info['currentMenu']=params;
-        ejse.data('system_current_page_file',basic_info['currentMenu']['file'])
-        mainWindow.loadFile('index.ejs').then(function (){});
-
-    }
-    else if(responseName=='changeSelectedMachine'){
-        basic_info['selectedMachineId']=params['machine_id'];
-        ejse.data('system_current_page_file',basic_info['currentMenu']['file'])
-        mainWindow.loadFile('index.ejs').then(function (){});
-
+        changeMenu(params)
     }
     else if(responseName=='saveSettings'){
         let project_prefix='adta_';
@@ -151,11 +148,8 @@ function connectClientSocketHandler() {
 }
 function closeClientSocketHandler () {
     if(basic_info['connected']){
-        basic_info['connected']=false;
-        basic_info['selectedMachineId']=0;
         logger.error(new Date().toString(),":DisConnected with JavaServer");
-        //Reload page because of disconnected or only change the disconnect notification
-        mainWindow.loadFile('index.ejs').then(function (){});
+        changeMenu({'connected':false,'selectedMachineId':0})//or only send disconnect event
     }
     setTimeout(connectWithServer, 2000);
 }
@@ -232,15 +226,11 @@ function processReceivedJsonObjects(jsonObject) {
         //     }
         // }
         // basicInfo['doorsInfo']=doors;
-        mainWindow.loadFile('index.ejs').then(function (){});
-
+        changeMenu({})
     }
     else{
         mainWindow.webContents.send(request,jsonObject);
     }
-
-
-
 }
 clientSocket.on('connect', connectClientSocketHandler);
 clientSocket.on('data',    dataReceivedClientSocketHandler);
