@@ -21,6 +21,16 @@ $(document).on('click','.menu',function (event){
 $(document).on('change','#system_machine_list',function (event){
     ipcRenderer.send("sendRequestToIpcMain", "changeMenu",{'selectedMachineId':$(this).val()});
 });
+$(document).on('click','.button-device-command',function (event){
+    let params={
+        'message_id':123,
+        'device_id':$(this).attr('data-device-id'),
+        'command':$(this).attr('data-command'),
+        'parameter1':$(this).attr('data-parameter1')
+    };
+    console.log(params)
+    ipcRenderer.send("sendRequestToServer", "forward_ape_message",params,[]);
+})
 $(document).ready(function ()
 {
     //start clock

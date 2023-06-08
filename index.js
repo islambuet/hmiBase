@@ -134,6 +134,7 @@ function connectWithServer () {
     let host=basic_info['hmiSettings']['java_server_ip_address'];
     let port=basic_info['hmiSettings']['java_server_port'];
     console.log(new Date().toString(),":Connecting with Host="+host+" Port="+port);
+    logger.info(new Date().toString(),":Connecting with Host="+host+" Port="+port);
     if(!basic_info['connected'] && host && port && port>=0 && port<65536){
         clientSocket.connect(port, host);
     }
