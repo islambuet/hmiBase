@@ -105,4 +105,7 @@
         });
         ipcRenderer.send("sendRequestToIpcMain", "saveSettings",formData);
     })
+    $(document).on('click','#button_login',function (event){
+        $('#menu_login').trigger('click')
+    })
 </script>

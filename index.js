@@ -229,6 +229,13 @@ function processReceivedJsonObjects(jsonObject) {
         // basicInfo['doorsInfo']=doors;
         changeMenu({})
     }
+    else if(request=='getLoginUser'){
+        if(jsonObject['data']['status']){
+            let currentUser=jsonObject['data']['user'];
+            changeMenu({'currentMenu':{'file':'settings','title':'Settings','name':'settings','members':''},'currentUser':currentUser})
+        }
+        mainWindow.webContents.send(request,jsonObject);
+    }
     else{
         mainWindow.webContents.send(request,jsonObject);
     }
