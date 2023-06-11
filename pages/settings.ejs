@@ -108,4 +108,7 @@
     $(document).on('click','#button_login',function (event){
         $('#menu_login').trigger('click')
     })
+    $(document).on('click','#button_changePassword',function (event){
+        ipcRenderer.send("sendRequestToIpcMain", "changeMenu",{'currentMenu':{'file':'change_password','title':'Change Password','name':'','members':''}});
+    })
 </script>
