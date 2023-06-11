@@ -18,6 +18,9 @@ $(document).on('click','.menu',function (event){
     let members=$(this).attr('data-members');
     ipcRenderer.send("sendRequestToIpcMain", "changeMenu",{'currentMenu':{'file':file,'title':title,'name':name,'members':members},'pageParams':basic_info['pageParams']});
 })
+$(document).on('click','#menu_logout',function (event){
+    ipcRenderer.send("sendRequestToIpcMain", "logout");
+})
 $(document).on('change','#system_machine_list',function (event){
     ipcRenderer.send("sendRequestToIpcMain", "changeMenu",{'selectedMachineId':$(this).val()});
 });
@@ -28,7 +31,14 @@ $(document).on('click','.button-device-command',function (event){
         'command':$(this).attr('data-command'),
         'parameter1':$(this).attr('data-parameter1')
     };
-    console.log(params)
+    ipcRenderer.send("sendRequestToServer", "forward_ape_message",params,[]);
+})
+$(document).on('click','.system_button_mode',function (event){
+    $(this).hide();
+    let params={
+        'message_id':120,
+        'mode':$(this).attr('data-mode')
+    };
     ipcRenderer.send("sendRequestToServer", "forward_ape_message",params,[]);
 })
 $(document).ready(function ()
@@ -55,12 +65,20 @@ ipcRenderer.on("basic_info", function(e, data) {
     $('#system_user_name').text(currentUser['name'])
 
     if(currentUser['role']>0){
-        jQuery("#menu_login").hide();
-        jQuery("#menu_logout").show();
+        $("#menu_login").hide();
+        $("#menu_logout").show();
     }
     else{
-        jQuery("#menu_login").show();
-        jQuery("#menu_logout").hide();
+        $("#menu_login").show();
+        $("#menu_logout").hide();
+    }
+    if((currentUser['role']>0)&&(currentUser['role']<4)){
+        $("#menu_maint").show();
+        $('#system_mode_buttons_container').show();
+    }
+    else{
+        $("#menu_maint").hide();
+        $('#system_mode_buttons_container').hide();
     }
     if(basic_info['connected']){
         $("#system_machine_status").css("color", "#0000FF");
@@ -101,11 +119,14 @@ ipcRenderer.on("getCommonStatus", function(e, jsonObject) {
     else {
         $("#system_machine_status").css("color", "#32CD32");
     }
+    $('.system_button_mode').hide();
     if(jsonObject['data']['machine_mode'] == 1) {
         $('.system_machine_info').css('background-color','#d3d3d3').css('color','#FFF');
+        $('.system_button_mode[data-mode=0]').show();
     }
     else if(jsonObject['data']['machine_mode'] == 0) {
         $('.system_machine_info').css('background-color','#2780E3').css('color','#FFF');
+        $('.system_button_mode[data-mode=1]').show();
     }
 
 })

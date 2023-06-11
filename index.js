@@ -36,10 +36,13 @@ function getHMISettings(){
         'general_layout_no' : store.get(project_prefix+'general_layout_no', '2')
     };
 }
+let unRegisteredUser={'id':0,'name':'Amazon Operator','role':0};
+let generalPage={'file':'general','title':'General View','name':'general','members':'general general_conveyors'}
+let settingsPage={'file':'settings','title':'Settings','name':'settings','members':''}
 let basic_info={
     "connected":false,
-    "currentUser":{'id':0,'name':'Amazon Operator','role':0},
-    'currentMenu':{'file':'general','title':'General View','name':'general','members':'general general_conveyors'},
+    "currentUser":unRegisteredUser,
+    'currentMenu':generalPage,
     'selectedMachineId':0,
     'pageParams':{},
     'hmiSettings':getHMISettings()
@@ -53,7 +56,7 @@ let nativeMenus = [
             {
                 label: 'Settings',
                 click() {
-                    changeMenu({'currentMenu':{'file':'settings','title':'Settings','name':'settings','members':''}})
+                    changeMenu({'currentMenu':settingsPage})
                 }
             },
             {
@@ -106,12 +109,24 @@ function changeMenu(params){
     ejse.data('system_current_page_file',basic_info['currentMenu']['file'])
     mainWindow.loadFile('index.ejs').then(function (){});
 }
+function logoutUser() {
+    let params={
+        'machine_id':basic_info['selectedMachineId'],
+        'message_id':120,
+        'mode':0
+    };
+    sendRequestToServer({"request" :'forward_ape_message','params':params,"requestData":[]});
+    changeMenu({'currentUser':unRegisteredUser})
+}
 ipcMain.on("sendRequestToIpcMain", function(e, responseName,params={}) {
     if(responseName=='basic_info'){
         mainWindow.webContents.send(responseName,basic_info);
     }
     else if(responseName=='changeMenu'){
         changeMenu(params)
+    }
+    else if(responseName=='logout'){
+        logoutUser();
     }
     else if(responseName=='saveSettings'){
         let project_prefix='adta_';
@@ -145,7 +160,7 @@ function connectWithServer () {
 function connectClientSocketHandler() {
     logger.info(new Date().toString(),":Connected with JavaServer");
     basic_info['connected']=true;
-    sendRequestToServer({"request" :'basic_info','params':{},"requestData":[]});//temporary machineId
+    sendRequestToServer({"request" :'basic_info','params':{},"requestData":[]});
 }
 function closeClientSocketHandler () {
     if(basic_info['connected']){
@@ -232,7 +247,7 @@ function processReceivedJsonObjects(jsonObject) {
     else if(request=='getLoginUser'){
         if(jsonObject['data']['status']){
             let currentUser=jsonObject['data']['user'];
-            changeMenu({'currentMenu':{'file':'settings','title':'Settings','name':'settings','members':''},'currentUser':currentUser})
+            changeMenu({'currentMenu':settingsPage,'currentUser':currentUser})
         }
         mainWindow.webContents.send(request,jsonObject);
     }
@@ -254,4 +269,13 @@ ipcMain.on("sendRequestToServer", function(e, responseName,params,requestData=[]
 })
 app.whenReady().then(() => {
     createWindow()
+})
+app.on('window-all-closed', () => {
+    let params={
+        'machine_id':basic_info['selectedMachineId'],
+        'message_id':120,
+        'mode':0
+    };
+    sendRequestToServer({"request" :'forward_ape_message','params':params,"requestData":[]});
+    app.quit()
 })
