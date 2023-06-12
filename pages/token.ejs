@@ -1,0 +1,123 @@
+<div class="row">
+    <div class="col-lg-12" >
+        <span style="font-size: 1.875rem">Token</span>
+        <img id="system_loading" src="theme/images/loading.svg" alt="Loading">
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-10">
+        <div class="alert alert-warning alert-dismissible fade show" id="alert_message_container" role="alert" style="display: none;">
+            <p class="mb-0" id="alert_message"></p>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-3"><h5>From</h5></div>
+    <div class="col-md-3"><h5>To</h5></div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <div class="row">
+            <div class="col-md-6 pr-0">
+                <input type="text" class="form-control" id="from_date" placeholder="From date">
+            </div>
+            <div class="col-md-3 pl-1 pr-0">
+                <select class="form-control" id="from_date_hour"></select>
+            </div>
+            <div class="col-md-3 pl-1 pr-0">
+                <select class="form-control" id="from_date_minute"></select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="row">
+            <div class="col-md-6 pr-0">
+                <input type="text" class="form-control" id="to_date" placeholder="To date">
+            </div>
+            <div class="col-md-3 pl-1 pr-0">
+                <select class="form-control" id="to_date_hour"></select>
+            </div>
+            <div class="col-md-3 pl-1 pr-0">
+                <select class="form-control" id="to_date_minute"></select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 pr-0">
+        <select class="form-control" id="filter_sorting_code">
+            <option value="-1">Sorting code...</option>
+        </select>
+    </div>
+    <div class="col-md-1 pr-0">
+        <button type="button" class="btn btn-primary form-control" id="button_filter">Filter</button>
+    </div>
+    <div class="col-md-2 pr-0">
+        <div class="row">
+            <label class="col-md-4 col-form-label pr-0" for="per_page">No of rows</label>
+            <div class="col-md-6 pl-1 pr-0">
+                <select class="form-control" id="per_page">
+                    <option value="5">5</option>
+                    <option value="100">100</option>
+                    <option value="1500">1500</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    /* global basic_info */
+    /* global ipcRenderer */
+    function systemPageLoaded(){
+        for (let i = 0; i < 24; i++) {
+            let option= '<option value="' +(i<10?'0':'')+ i + '">' + (i<10?'0':'')+i+ '</option>';
+            $("#from_date_hour").append(option);
+            $("#to_date_hour").append(option);
+        }
+        for (let i = 0; i < 60; i++) {
+            let option= '<option value="' +(i<10?'0':'')+ i + '">' + (i<10?'0':'')+i+ '</option>';
+            $("#from_date_minute").append(option);
+            $("#to_date_minute").append(option);
+        }
+        $("#from_date").datepicker({
+            autoclose: true,
+            format: 'mm-dd-yyyy',
+            orientation: "bottom right"
+        });
+        $("#to_date").datepicker({
+            autoclose: true,
+            format: 'mm-dd-yyyy',
+            orientation: "bottom right",
+        });
+        if(basic_info['connected']){
+            let requestData=[
+                {'name':'statistics_counter','params':{'per_page':1,"page":2}},
+            ];
+            ipcRenderer.send("sendRequestToServer", "getStatisticsCounterLast",{},requestData);//send request now
+        }
+    }
+    ipcRenderer.on("getStatisticsCounterLast", function(e, jsonObject) {
+        if(jsonObject['data']['statistics_counter'].length>0){
+            let startDate=moment(jsonObject['data']['statistics_counter'][0]['created_at_timestamp']*1000);
+            $('#from_date_hour').val((startDate.hour()<10?"0":"")+startDate.hour())
+            $('#from_date_minute').val((startDate.minute()<10?"0":"")+startDate.minute())
+            $('#from_date').datepicker('update', startDate.format('MM-DD-YYYY'));
+
+            let now=moment();
+            $('#to_date_hour').val((now.hour()<10?"0":"")+now.hour())
+            $('#to_date_minute').val((now.minute()<10?"0":"")+now.minute())
+            $('#to_date').datepicker('update', now.format('MM-DD-YYYY'));
+
+        }
+        else{
+            let error_message = "<b>Please Contact with admin. No Schedule found</b>";
+            $("#alert_message").html(error_message);
+            $("#alert_message_container").show();
+        }
+    })
+</script>
