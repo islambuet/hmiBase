@@ -8,7 +8,7 @@
     <div class="col-md-10">
         <div class="alert alert-warning alert-dismissible fade show" id="alert_message_container" role="alert" style="display: none;">
             <p class="mb-0" id="alert_message"></p>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <button type="button" class="close alert-close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
@@ -107,8 +107,8 @@
         }
     }
     ipcRenderer.on("getStatisticsCounterLast", function(e, jsonObject) {
-        if(jsonObject['data']['statistics_counter'].length>0){
-            let startDate=moment(jsonObject['data']['statistics_counter'][0]['created_at_timestamp']*1000);
+        if(jsonObject['data']['statistics_counter']['records'].length>0){
+            let startDate=moment(jsonObject['data']['statistics_counter']['records'][0]['created_at_timestamp']*1000);
             $('#from_date_hour').val((startDate.hour()<10?"0":"")+startDate.hour())
             $('#from_date_minute').val((startDate.minute()<10?"0":"")+startDate.minute())
             $('#from_date').datepicker('update', startDate.format('MM-DD-YYYY'));
@@ -135,20 +135,27 @@
         let from_timestamp = moment($('#from_date').val()+" "+$("#from_date_hour").val()+":"+$("#from_date_minute").val(), "MM-DD-YYYY HH:mm").unix();
         let to_timestamp = moment($('#to_date').val()+" "+$("#to_date_hour").val()+":"+$("#to_date_minute").val(), "MM-DD-YYYY HH:mm").unix();
         if(Number.isInteger(from_timestamp) && Number.isInteger(to_timestamp)){
-            let requestData=[
-                {
-                    'name':'products_history',
-                    'params':{
-                        'reason':$('#filter_sorting_code').val(),
-                        'from_timestamp':from_timestamp,
-                        'to_timestamp':to_timestamp,
-                        'per_page':$('#per_page').val(),
-                        "page":1
-                    }
-                },
-            ];
-            $('#system_loading').show()
-            ipcRenderer.send("sendRequestToServer", "getProductsHistory",{},requestData);//send request now
+            if(basic_info['connected']) {
+                let requestData = [
+                    {
+                        'name': 'products_history',
+                        'params': {
+                            'reason': $('#filter_sorting_code').val(),
+                            'from_timestamp': from_timestamp,
+                            'to_timestamp': to_timestamp,
+                            'per_page': $('#per_page').val(),
+                            "page": 1
+                        }
+                    },
+                ];
+                $('#system_loading').show()
+                ipcRenderer.send("sendRequestToServer", "getProductsHistory", {}, requestData);
+            }
+            else{
+                let error_message = "<b>Server Not connected</b>";
+                $("#alert_message").html(error_message);
+                $("#alert_message_container").show();
+            }
         }
         else{
             let error_message = "<b>Please select dates correctly</b>";

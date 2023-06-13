@@ -11,6 +11,9 @@ function startClock(){
     $("#system_display_date").text((now.getMonth()+1).toString().padStart(2,"0")+"/"+now.getDate().toString().padStart(2,"0")+"/"+now.getFullYear())
     $("#system_display_time").text(now.getHours().toString().padStart(2,"0")+":"+now.getMinutes().toString().padStart(2,"0")+":"+now.getSeconds().toString().padStart(2,"0"))
 }
+$(document).on('click','.alert-close',function (event){
+    $(this).parent().hide()
+})
 $(document).on('click','.menu',function (event){
     let file=$(this).attr('data-file');
     let title=$(this).attr('data-title');
