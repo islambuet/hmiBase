@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-lg-12" >
         <span style="font-size: 1.875rem">Token</span>
-        <img id="system_loading" src="theme/images/loading.svg" alt="Loading">
+        <img id="system_loading" style="display: none;" src="theme/images/loading.svg" alt="Loading">
     </div>
 </div>
 <div class="row">
@@ -94,6 +94,11 @@
             format: 'mm-dd-yyyy',
             orientation: "bottom right",
         });
+
+        for (let key in basic_info['scs']) {
+            let sc = basic_info['scs'][key];
+            $("#filter_sorting_code").append('<option value="' + sc.value + '">' + sc.label + '</option>');
+        }
         if(basic_info['connected']){
             let requestData=[
                 {'name':'statistics_counter','params':{'per_page':1,"page":2}},
@@ -112,10 +117,41 @@
             $('#to_date_hour').val((now.hour()<10?"0":"")+now.hour())
             $('#to_date_minute').val((now.minute()<10?"0":"")+now.minute())
             $('#to_date').datepicker('update', now.format('MM-DD-YYYY'));
+            $('#button_filter').trigger('click')
 
         }
         else{
             let error_message = "<b>Please Contact with admin. No Schedule found</b>";
+            $("#alert_message").html(error_message);
+            $("#alert_message_container").show();
+        }
+    })
+    ipcRenderer.on("getProductsHistory", function(e, jsonObject) {
+        $('#system_loading').hide()
+        console.log(jsonObject)
+    })
+    $(document).on('click','#button_filter',function (event){
+        $("#alert_message_container").hide();
+        let from_timestamp = moment($('#from_date').val()+" "+$("#from_date_hour").val()+":"+$("#from_date_minute").val(), "MM-DD-YYYY HH:mm").unix();
+        let to_timestamp = moment($('#to_date').val()+" "+$("#to_date_hour").val()+":"+$("#to_date_minute").val(), "MM-DD-YYYY HH:mm").unix();
+        if(Number.isInteger(from_timestamp) && Number.isInteger(to_timestamp)){
+            let requestData=[
+                {
+                    'name':'products_history',
+                    'params':{
+                        'reason':$('#filter_sorting_code').val(),
+                        'from_timestamp':from_timestamp,
+                        'to_timestamp':to_timestamp,
+                        'per_page':$('#per_page').val(),
+                        "page":1
+                    }
+                },
+            ];
+            $('#system_loading').show()
+            ipcRenderer.send("sendRequestToServer", "getProductsHistory",{},requestData);//send request now
+        }
+        else{
+            let error_message = "<b>Please select dates correctly</b>";
             $("#alert_message").html(error_message);
             $("#alert_message_container").show();
         }
