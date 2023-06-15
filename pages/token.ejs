@@ -105,7 +105,8 @@
     /* global basic_info */
     /* global ipcRenderer */
     let dataTable= $('#table_datatable').DataTable({
-        dom: 'Bifrtp',
+        //dom: 'Bifrtp',
+        dom: '<Bif>rtp',
         paging: false,
         buttons: [
             {
@@ -193,10 +194,6 @@
             ]);
         }
         dataTable.draw();
-        console.log(jsonObject)
-        //let dataTable= $('#table_datatable').DataTable();
-        //$('#table_datatable').DataTable();
-        //console.log(dataTable)
     })
     $(document).on('change','#per_page',function (event){
         $('#button_filter').trigger('click')
