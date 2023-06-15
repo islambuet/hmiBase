@@ -11,6 +11,16 @@ function startClock(){
     $("#system_display_date").text((now.getMonth()+1).toString().padStart(2,"0")+"/"+now.getDate().toString().padStart(2,"0")+"/"+now.getFullYear())
     $("#system_display_time").text(now.getHours().toString().padStart(2,"0")+":"+now.getMinutes().toString().padStart(2,"0")+":"+now.getSeconds().toString().padStart(2,"0"))
 }
+function getPaginationHtml(totalRecords,per_page,page){
+    console.log(per_page,page)
+    let page_total=Math.ceil(totalRecords/per_page);
+    let html='<li class="page-item'+(page<2?' disabled':'')+'"  data-page="-"><button class="page-link">Previous</button></li>';
+    for(let i=1;i<=page_total;i++){
+        html+='<li class="page-item'+(page==i?' active':'')+'" data-page="'+i+'"><button class="page-link">'+i+'</button></li>';
+    }
+    html+='<li class="page-item'+(page>=page_total?' disabled':'')+'"  data-page="+"><button class="page-link">Next</button></li>';
+    return html;
+}
 $(document).on('click','.alert-close',function (event){
     $(this).parent().hide()
 })
