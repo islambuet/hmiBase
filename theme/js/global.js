@@ -12,13 +12,16 @@ function startClock(){
     $("#system_display_time").text(now.getHours().toString().padStart(2,"0")+":"+now.getMinutes().toString().padStart(2,"0")+":"+now.getSeconds().toString().padStart(2,"0"))
 }
 function getPaginationHtml(totalRecords,per_page,page){
-    console.log(per_page,page)
     let page_total=Math.ceil(totalRecords/per_page);
-    let html='<li class="page-item'+(page<2?' disabled':'')+'"  data-page="-"><button class="page-link">Previous</button></li>';
+    let html='<div class="row"><div class="col-12"><ul class="pagination float-right"><li class="page-item'+(page<2?' disabled':'')+'"  data-page="-"><button class="page-link">Previous</button></li>';
     for(let i=1;i<=page_total;i++){
         html+='<li class="page-item'+(page==i?' active':'')+'" data-page="'+i+'"><button class="page-link">'+i+'</button></li>';
+        if(((i%35)==0)&&((i+4)<page_total)){
+            html+='<li class="page-item'+(page>=page_total?' disabled':'')+'"  data-page="+"><button class="page-link">Next</button></li></ul></div></div>';
+            html+='<div class="row"><div class="col-12"><ul class="pagination float-right"><li class="page-item'+(page<2?' disabled':'')+'"  data-page="-"><button class="page-link">Previous</button></li>';
+        }
     }
-    html+='<li class="page-item'+(page>=page_total?' disabled':'')+'"  data-page="+"><button class="page-link">Next</button></li>';
+    html+='<li class="page-item'+(page>=page_total?' disabled':'')+'"  data-page="+"><button class="page-link">Next</button></li></ul></div></div>';
     return html;
 }
 $(document).on('click','.alert-close',function (event){

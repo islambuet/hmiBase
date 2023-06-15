@@ -61,11 +61,10 @@
             <div class="col-md-6 pl-1 pr-0">
                 <select class="form-control" id="per_page">
                     <option value="50">50</option>
-                    <option value="500" selected>500</option>
+                    <option value="500">500</option>
                     <option value="1000">1000</option>
                     <option value="1500">1500</option>
                     <option value="0">All</option>
-
                 </select>
             </div>
         </div>
@@ -101,9 +100,54 @@
     </div>
 </div>
 <div class="row mt-2">
-    <div class="col-12">
+    <div class="col-12" id="pagination_container">
+        <div class="row"><div class="col-12"><ul class="pagination float-right">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item active">
+                        <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul></div></div>
+        <div class="row">
+            <div class="col-12">
+                <ul class="pagination float-right">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item active">
+                        <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
         <ul class="pagination  float-right" id="pagination_container">
 
+        </ul>
+        <ul class="pagination float-right">
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">Previous</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item active">
+                <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+            </li>
         </ul>
     </div>
 </div>
@@ -112,6 +156,7 @@
     /* global basic_info */
     /* global ipcRenderer */
     /* global getPaginationHtml */
+    let binsBySortManger={}
     let current_page=1;
     let dataTable= $('#table_datatable').DataTable({
         //dom: 'Bifrtp',
@@ -123,10 +168,12 @@
                 fieldSeparator: ";",
                 text: 'Export'
             }],
+        // order:[[3,'asc']],
+        order:[],//no ordering default was first column
         scrollY: 400,
         "columns": [
             {},
-            {className: "text-right pr-3"},
+            {className: "text-right"},
             {},
             {},
             {},
@@ -156,6 +203,10 @@
             format: 'mm-dd-yyyy',
             orientation: "bottom right",
         });
+        for(let key in basic_info['bins']){
+            let bin=basic_info['bins'][key];
+            binsBySortManger[bin['sort_manager_id']]=bin;
+        }
 
         for (let key in basic_info['scs']) {
             let sc = basic_info['scs'][key];
@@ -198,9 +249,9 @@
                 record['mail_id'],
                 record['length'],
                 record['barcode1_string'],
-                record['reason'],
-                record['destination'],
-                record['destination_final'],
+                basic_info['scs'][record['reason']]?basic_info['scs'][record['reason']]['label']:'-',
+                binsBySortManger[record['destination']]?binsBySortManger[record['destination']]['bin_label']:'-',
+                binsBySortManger[record['destination_final']]?binsBySortManger[record['destination_final']]['bin_label']:'-',
             ]);
         }
         dataTable.draw();
