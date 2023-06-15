@@ -180,7 +180,6 @@
     })
     ipcRenderer.on("getProductsHistory", function(e, jsonObject) {
         $('#system_loading').hide()
-        dataTable.clear().search('').draw();
         for(let key in jsonObject['data']['products_history']['records']){
             let record=jsonObject['data']['products_history']['records'][key]
             dataTable.row.add([
@@ -192,9 +191,8 @@
                 record['destination'],
                 record['destination_final'],
             ]);
-            dataTable.draw();
-
         }
+        dataTable.draw();
         console.log(jsonObject)
         //let dataTable= $('#table_datatable').DataTable();
         //$('#table_datatable').DataTable();
