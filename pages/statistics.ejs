@@ -1,0 +1,242 @@
+<div class="row mt-2">
+    <div class="col-lg-3">
+        <select id="update_period" class="pt-2 pb-2 pl-2 pr-2" style="border:0;background-color: #f8f9fa; font-weight: bold; font-size: 12px;">
+            <option value="3">Every 3 minutes</option>
+            <option value="60">Hourly</option>
+        </select>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-lg-6" id="bcr-chart" style="height: 280px;">BCR Chart</div>
+    <div class="col-lg-6">
+        <div class="row">
+            <div class="col-lg-6">
+                <table class="table table-sm table-bordered" id="table_production">
+                    <thead>
+                    <tr>
+                        <th>Production <span id="production_start_time"></span></th>
+                        <th style="width: 40px"></th>
+                        <th style="width: 80px;"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-6">
+                <table class="table table-sm table-bordered" id="table_scanner">
+                    <thead>
+                    <tr>
+                        <th>Scanner Summary</th>
+                        <th style="width: 40px"></th>
+                        <th style="width: 80px;"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <button style="display: none" id="button_reset" class="button-device-command button-3d button-rectangle"
+                        data-device-id="86"
+                        data-command="0"
+                        data-parameter1="0">Reset
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-6">
+    </div>
+    <div class="col-lg-6">
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="switch_pie_sc" checked>
+            <label class="form-check-label" for="switch_pie">Pie Chart</label>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-lg-6">
+        <div id="tput-chart" style="height: 406px;">TPUT Chart</div>
+    </div>
+    <div class="col-lg-6">
+        <div class="row">
+            <div class="col-lg-12" id="pie-chart" style="height: 408px;">PIE Chart</div>
+            <div class="col-lg-12" id="table_sc" style="display:none;overflow-y: auto; height: 406px">
+                <table class="table table-sm table-bordered table-v-scroll">
+                    <thead>
+                    <tr class="thead-row">
+                        <th>SC Summary</th>
+                        <th style="width: 40px"></th>
+                        <th style="width: 80px;"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<footer id="footer" class="container-fluid">
+    <%- include('../components/statistics_footer') %>
+</footer>
+<script>
+    /* global basic_info */
+    /* global ipcRenderer */
+    const Highcharts = require('highcharts/highstock')
+    require('highcharts/modules/exporting')(Highcharts);
+    require('highcharts/modules/export-data')(Highcharts);
+    let pie_chart = Highcharts.chart('pie-chart', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie',
+            borderColor: '#D3D3D3',
+            borderWidth: 1
+        },
+        credits: {
+            enabled: false
+        },
+        title: {
+            text: 'Total Products: 0'
+        },
+        tooltip: {
+            pointFormat: '<b>{point.percentage:.1f}%</b>'
+        },
+        accessibility: {
+            point: {
+                valueSuffix: '%'
+            }
+        },
+        navigation: {
+            buttonOptions: {
+                enabled: false
+            }
+        },
+        legend: {
+            align: 'right',
+            verticalAlign: 'middle',
+            layout: 'vertical',
+            itemMarginBottom: 8,
+            symbolHeight: 12,
+            symbolWidth: 12,
+            symbolRadius: 0,
+            itemStyle: {
+                fontWeight: 'normal',
+                fontSize: '10px',
+                cursor: "pointer",
+                color: '#000'
+            }
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.percentage:.1f}'
+                },
+                showInLegend: true
+            }
+        },
+        series: [{
+            name: 'Sorting Codes',
+            colorByPoint: true,
+            data: []
+        }]
+    });
+    function systemPageLoaded(){
+        let currentUser=basic_info['currentUser'];
+        if (currentUser['role'] >0 && currentUser['role'] <4) {
+            $('#button_reset').show();
+        }
+        else{
+            $('#button_reset').show();
+        }
+        if(basic_info['connected']){
+            let requestData=[
+                {'name':'statistics_counter','params':{'per_page':1}},
+            ];
+            ipcRenderer.send("sendRequestToServer", "getStatisticsCounterLast",{},requestData);//send request now
+            setInterval(() => {
+                ipcRenderer.send("sendRequestToServer", "getStatisticsCounterLast",{},requestData);
+            }, 2000);
+        }
+    }
+    $('#switch_pie_sc').change(function () {
+        if ($(this).is(":checked")) {
+            $('#pie-chart').show();
+            $('#table_sc').hide();
+        }
+        else {
+            $('#pie-chart').hide();
+            $('#table_sc').show();
+        }
+    });
+
+
+    ipcRenderer.on("getStatisticsCounterLast", function(e, jsonObject) {
+        if(jsonObject['data']['statistics_counter']['records'].length>0){
+            //console.log(jsonObject['data']['statistics_counter']['records'])
+            let shiftInfo=jsonObject['data']['statistics_counter']['records'][0];
+            let shift_starting_time = shiftInfo['created_at_timestamp'];
+            $('#table_production #production_start_time').text(`(started from ${moment(shift_starting_time * 1000).format('MMM D Y, HH:mm:ss')})`);
+
+            console.log(shiftInfo)
+
+            let scs_data=[];
+            let machine_errors = 0, non_machine_errors = 0,total_scs_count=0;
+            for(let key in basic_info['scs'])
+            {
+                let sc=basic_info['scs'][key];
+                if(sc['error_type']==1){
+                    machine_errors += Number(shiftInfo['sc'+sc['value']]);
+                }
+                else if(sc['error_type']==2){
+                    non_machine_errors += Number(shiftInfo['sc'+sc['value']]);
+                }
+                sc['count']=Number(shiftInfo['sc'+sc['value']]);
+                total_scs_count+=sc['count'];
+                scs_data.push(sc);
+            }
+            scs_data.sort(function(a, b){return ((a['error_type'] - b['error_type'])||(b['count'] - a['count']))});
+            $('#table_sc tbody').empty();
+            let pie_chart_data = [];
+            for(let i=0;i<scs_data.length;i++){
+                let html='<tr>' +
+                '<td>' + scs_data[i]['label'] + '</td>' +
+                '<td>' + scs_data[i]['count']+ '</td>' +
+                '<td>' + (total_scs_count>0?Number((scs_data[i]['count'] * 100 / total_scs_count).toFixed(1)):'0')+ '%' + '</td>' +
+                '</tr>';
+                $('#table_sc tbody').append(html)
+                pie_chart_data.push({
+                    name: scs_data[i]['label'],
+                    y: (total_scs_count>0?Number((scs_data[i]['count'] * 100 / total_scs_count).toFixed(1)):0),
+                    selected: (i==0),
+                    sliced: (i!=0),
+                    color: scs_data[i]['color']
+                });
+            }
+            pie_chart.series[0].setData(pie_chart_data, true);
+            pie_chart.setTitle({text: "Total Products: " + total_scs_count});
+
+
+
+
+            // let startDate=moment(jsonObject['data']['statistics_counter']['records'][0]['created_at_timestamp']*1000);
+            // $('#from_date_hour').val((startDate.hour()<10?"0":"")+startDate.hour())
+            // $('#from_date_minute').val((startDate.minute()<10?"0":"")+startDate.minute())
+            // $('#from_date').datepicker('update', startDate.format('MM-DD-YYYY'));
+            //
+            // let now=moment();
+            // $('#to_date_hour').val((now.hour()<10?"0":"")+now.hour())
+            // $('#to_date_minute').val((now.minute()<10?"0":"")+now.minute())
+            // $('#to_date').datepicker('update', now.format('MM-DD-YYYY'));
+            // current_page=1;
+            // $('#button_filter').trigger('click')
+
+        }
+    })
+</script>
