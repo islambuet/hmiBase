@@ -501,7 +501,7 @@
             },
             colors: ['#38bdf8', '#fbbf24'],
 
-            series: update_period === 'Hourly' ?
+            series: (update_period == 60) ?
                 [{
                     name: 'Tput-hourly',
                     marker: {
