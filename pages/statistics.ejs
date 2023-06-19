@@ -285,191 +285,6 @@
             }
         }
     })
-    let bcr_chart = Highcharts.chart('bcr-chart', {
-        chart: {
-            type: 'spline',
-            animation: Highcharts.svg, // don't animate in old IE
-            marginRight: 10,
-            borderColor: '#D3D3D3',
-            borderWidth: 1
-        },
-
-        time: {
-            useUTC: false
-        },
-
-        title: {
-            text: 'BCR Read Rate'
-        },
-
-        accessibility: {
-            announceNewData: {
-                enabled: true,
-                minAnnounceInterval: 15000,
-                announcementFormatter: function (allSeries, newSeries, newPoint) {
-                    if (newPoint) {
-                        return 'New point added. Value: ' + newPoint.y;
-                    }
-                    return false;
-                }
-            }
-        },
-
-        xAxis: {
-            type: 'datetime',
-            tickInterval: 1000*60*60
-        },
-
-        yAxis: {
-            title: {
-                text: null
-            },
-            tickInterval: 20,
-            tickWidth: 1,
-            tickLength: 5,
-            min: 0,
-            max: 100,
-            lineColor: '#C0C0C0',
-            lineWidth: 1,
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: '#808080'
-            }]
-        },
-
-        tooltip: {
-            headerFormat: '<b>{series.name}</b><br/>',
-            pointFormat: 'Time:{point.x:%Y-%m-%d %H:%M}<br/>Rate:{point.y:.2f}%'
-        },
-
-        legend: {
-            enabled: true
-        },
-
-        exporting: {
-            enabled: true,
-            buttons: {
-                contextButton: {
-                    menuItems: ['downloadCSV', 'separator', 'downloadPDF', 'downloadPNG']
-                }
-            }
-        },
-
-        credits: {
-            enabled: false
-        },
-
-        series: [{
-            name: 'BCR Read Rate',
-            marker: {
-                enabled: false
-            },
-            data: []
-        }]
-    });
-    let tput_chart = Highcharts.chart('tput-chart', {
-        plotOptions: {
-            series: {
-                animation: false,
-                turboThreshold: 0
-            }
-        },
-        chart: {
-            type: 'spline',
-            animation: Highcharts.svg, // don't animate in old IE
-            marginRight: 10,
-            borderColor: '#D3D3D3',
-            borderWidth: 1
-        },
-
-        time: {
-            useUTC: false
-        },
-
-        title: {
-            text: 'Tput'
-        },
-
-        accessibility: {
-            // announceNewData: {
-            //     enabled: true,
-            //     minAnnounceInterval: 15000,
-            //     announcementFormatter: function (allSeries, newSeries, newPoint) {
-            //         if (newPoint) {
-            //             return 'New point added. Value: ' + newPoint.y;
-            //         }
-            //         return false;
-            //     }
-            // }
-        },
-
-        xAxis: {
-            type: 'datetime',
-            tickInterval: 1000 * 60 * 60
-        },
-
-        yAxis: {
-            title: {
-                text: null
-            },
-            labels: {
-                format: '{value}'
-            },
-            tickInterval: 2000,
-            tickWidth: 1,
-            tickLength: 5,
-            min: 0,
-            max: 6000,
-            lineColor: '#C0C0C0',
-            lineWidth: 1,
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: '#808080'
-            }]
-        },
-
-        tooltip: {
-            headerFormat: '<b>{series.name}</b><br/>',
-            pointFormat: '{point.x:%Y-%m-%d %H:%M:%S}<br/>{point.y:.2f}'
-        },
-
-        legend: {
-            enabled: true
-        },
-
-        exporting: {
-            enabled: true,
-            buttons: {
-                contextButton: {
-                    menuItems: ['downloadCSV', 'separator', 'downloadPDF', 'downloadPNG']
-                }
-            }
-        },
-
-        credits: {
-            enabled: false
-        },
-        colors: ['#38bdf8', '#fbbf24'],
-        series:[]
-        // series:[
-        //         {
-        //             name: 'Tput',
-        //             marker: {
-        //                 enabled: false
-        //             },
-        //             data: []
-        //         },
-        //         {
-        //             name: 'Tput-per-minute',
-        //             marker: {
-        //                 enabled: false
-        //             },
-        //             data: []
-        //         },
-        //     ]
-    });
     ipcRenderer.on("getStatistics", function(e, jsonObject) {
         let update_period=jsonObject['params']['update_period'];
         let bcr_chart_data = [], tput_chart_data = [], tput_minutely_chart_data = [];
@@ -511,27 +326,205 @@
                 y: tput_value
             });
         }
-        bcr_chart.series[0].setData(bcr_chart_data, true);
-        let series=[
-                {
-                    name: 'Tput',
-                    marker: {
-                        enabled: false
-                    },
-                    data: []
-                },
-                {
-                    name: 'Tput-per-minute',
-                    marker: {
-                        enabled: false
-                    },
-                    data: []
-                },
-            ]
-        tput_chart.series=series;
-        // tput_chart.series[0].setData(tput_chart_data, true);
-        // tput_chart.series[1].setData(tput_minutely_chart_data, true);
+        Highcharts.chart('bcr-chart', {
+            plotOptions: {
+                series: {
+                    animation: false
+                }
+            },
+            chart: {
+                type: 'spline',
+                animation: Highcharts.svg, // don't animate in old IE
+                marginRight: 10,
+                borderColor: '#D3D3D3',
+                borderWidth: 1
+            },
 
-        // console.log(bcr_chart_data)
+            time: {
+                useUTC: false
+            },
+
+            title: {
+                text: 'BCR Read Rate'
+            },
+
+            accessibility: {
+                // announceNewData: {
+                //     enabled: true,
+                //     minAnnounceInterval: 15000,
+                //     announcementFormatter: function (allSeries, newSeries, newPoint) {
+                //         if (newPoint) {
+                //             return 'New point added. Value: ' + newPoint.y;
+                //         }
+                //         return false;
+                //     }
+                // }
+            },
+
+            xAxis: {
+                type: 'datetime',
+                tickInterval: 1000 * 60 * 60
+            },
+
+            yAxis: {
+                title: {
+                    text: null
+                },
+                tickInterval: 20,
+                tickWidth: 1,
+                tickLength: 5,
+                min: 0,
+                max: 100,
+                lineColor: '#C0C0C0',
+                lineWidth: 1,
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+
+            tooltip: {
+                headerFormat: '<b>{series.name}</b><br/>',
+                pointFormat: 'Time:{point.x:%Y-%m-%d %H:%M}<br/>Rate:{point.y:.2f}%'
+            },
+
+            legend: {
+                enabled: true
+            },
+
+            exporting: {
+                enabled: true,
+                buttons: {
+                    contextButton: {
+                        menuItems: ['downloadCSV', 'separator', 'downloadPDF', 'downloadPNG']
+                    }
+                }
+            },
+
+            credits: {
+                enabled: false
+            },
+
+            colors: ['#38bdf8'],
+
+            series: [{
+                name: 'BCR Read Rate',
+                marker: {
+                    enabled: false
+                },
+                data: bcr_chart_data
+            }]
+        });
+        Highcharts.chart('tput-chart', {
+            plotOptions: {
+                series: {
+                    animation: false,
+                    turboThreshold: 0
+                }
+            },
+            chart: {
+                type: 'spline',
+                animation: Highcharts.svg, // don't animate in old IE
+                marginRight: 10,
+                borderColor: '#D3D3D3',
+                borderWidth: 1
+            },
+
+            time: {
+                useUTC: false
+            },
+
+            title: {
+                text: 'Tput'
+            },
+
+            accessibility: {
+                // announceNewData: {
+                //     enabled: true,
+                //     minAnnounceInterval: 15000,
+                //     announcementFormatter: function (allSeries, newSeries, newPoint) {
+                //         if (newPoint) {
+                //             return 'New point added. Value: ' + newPoint.y;
+                //         }
+                //         return false;
+                //     }
+                // }
+            },
+
+            xAxis: {
+                type: 'datetime',
+                tickInterval: 1000 * 60 * 60
+            },
+
+            yAxis: {
+                title: {
+                    text: null
+                },
+                labels: {
+                    format: '{value}'
+                },
+                tickInterval: 2000,
+                tickWidth: 1,
+                tickLength: 5,
+                min: 0,
+                max: 6000,
+                lineColor: '#C0C0C0',
+                lineWidth: 1,
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+
+            tooltip: {
+                headerFormat: '<b>{series.name}</b><br/>',
+                pointFormat: '{point.x:%Y-%m-%d %H:%M:%S}<br/>{point.y:.2f}'
+            },
+
+            legend: {
+                enabled: true
+            },
+
+            exporting: {
+                enabled: true,
+                buttons: {
+                    contextButton: {
+                        menuItems: ['downloadCSV', 'separator', 'downloadPDF', 'downloadPNG']
+                    }
+                }
+            },
+
+            credits: {
+                enabled: false
+            },
+            colors: ['#38bdf8', '#fbbf24'],
+
+            series: update_period === 'Hourly' ?
+                [{
+                    name: 'Tput-hourly',
+                    marker: {
+                        enabled: false
+                    },
+                    data: tput_chart_data
+                }]
+                : [
+                    {
+                        name: 'Tput-3-minutes',
+                        marker: {
+                            enabled: false
+                        },
+                        data: tput_chart_data
+                    },
+                    {
+                        name: 'Tput-per-minute',
+                        marker: {
+                            enabled: false
+                        },
+                        data: tput_minutely_chart_data
+                    },
+                ]
+        });
     })
 </script>
