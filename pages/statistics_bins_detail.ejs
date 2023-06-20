@@ -83,7 +83,6 @@
         }
     })
     ipcRenderer.on('getStatisticsBinsCounter', function (e, jsonObject) {
-
         let bins_statistics = jsonObject['data']['statistics_bins_counter']['records']
         let bins=[]
         for(let i in bins_statistics){
@@ -187,8 +186,7 @@
                     point: {
                         events: {
                             click: function () {
-                                //onBarClick(this.category);
-                                console.log("clicked",this.category)
+                                onSeriesClick(this.category);
                             },
                         }
                     }
@@ -207,5 +205,22 @@
             },
             series: series
         });
+    }
+    function onSeriesClick(bin_label){
+        // let bin = basic_info['bins'].filter(
+        //     function(a){ return a['bin_label'] == bin_label }
+        // );
+        let bin = Object.entries( basic_info['bins']).find(item => item[1]['bin_label']==bin_label);
+        if(bin){
+            basic_info['pageParams']={'bin':bin[1]}
+            ipcRenderer.send("sendRequestToIpcMain", "changeMenu",
+                {
+                    'currentMenu':{'file':'statistics_bins_detail_single',
+                    'title':'Bins Detail',
+                    'name':'statistics_bins_detail_single','members':'statistics'},
+                    'pageParams':basic_info['pageParams']
+                });
+
+        }
     }
 </script>
