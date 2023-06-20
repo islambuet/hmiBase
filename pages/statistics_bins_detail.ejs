@@ -2,7 +2,7 @@
     <div class="col-12">
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-volume"  aria-selected="true">Volume</a>
+                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-volume" role="tab" aria-controls="nav-volume"  aria-selected="true">Volume</a>
                 <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-percentage" role="tab" aria-controls="nav-percentage" aria-selected="false">Percentage</a>
                 <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-table" role="tab" aria-controls="nav-table"  aria-selected="false">Table</a>
             </div>
@@ -117,9 +117,36 @@
             html+='</tr>';
             $('#table_sc tbody').append(html)
         }
-
-        //populateChart('bins-detailed','Bins Detailed-Total', chart_categories, chart_series);
-        //populateChart('bins-detailed-percentage', 'Bins Detailed-Percentage (%)', chart_categories, chart_series_percentage);
+        // for(let key in basic_info['scs'])
+        // {
+        //     bin['sc'+basic_info['scs'][key]['value']]=bins_statistics[i][['sc'+basic_info['scs'][key]['value']]]//assuming only one data because its latest
+        //     if(basic_info['scs'][key]['value']!="0"){
+        //         console.log()
+        //         bin['reject']+=Number(bin['sc'+basic_info['scs'][key]['value']]);
+        //     }
+        // }
+        let chart_categories = bins.map(b => b['bin_label'])
+        let series_volume=[],series_percentage=[];
+        for(let key in basic_info['scs'])
+        {
+            let sc=basic_info['scs'][key];
+            series_volume.push({name: sc['label'], color: sc['color'], data: bins.map(b => Number(b['sc'+sc['value']])), stack:'sort-codes'});
+            series_percentage.push({
+                name: sc['label'],
+                color: sc['color'],
+                data: bins.map(b => {
+                    let total=(Number(b['reject'])+Number(b['sc0']))
+                    return total>0?Number(Number(b['sc'+sc['value']]*100/total).toFixed(2)):0
+                }),
+                stack:'sort-codes'
+            });
+        }
+        //series_volume.sort()
+        series_volume.sort((a, b) => a.data.reduce((s, c) => s += c, 0) - b.data.reduce((s, c) => s += c, 0));
+        series_percentage.sort((a, b) => a.data.reduce((s, c) => s += c, 0) - b.data.reduce((s, c) => s += c, 0));
+        //console.log(series_percentage)
+        populateChart('chart-bins-volume','Bins Detailed-Total', chart_categories,series_volume);
+        populateChart('chart-bins-percentage', 'Bins Detailed-Percentage (%)', chart_categories,series_percentage);
 
     });
     function populateChart(id,title, categories = [], series = []) {
@@ -160,7 +187,8 @@
                     point: {
                         events: {
                             click: function () {
-                                onBarClick(this.category);
+                                //onBarClick(this.category);
+                                console.log("clicked",this.category)
                             },
                         }
                     }
