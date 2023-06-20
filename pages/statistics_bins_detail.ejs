@@ -1,0 +1,183 @@
+<div class="row mt-2">
+    <div class="col-12">
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-volume"  aria-selected="true">Volume</a>
+                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-percentage" role="tab" aria-controls="nav-percentage" aria-selected="false">Percentage</a>
+                <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-table" role="tab" aria-controls="nav-table"  aria-selected="false">Table</a>
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-volume" role="tabpanel" aria-labelledby="nav-volume-tab">
+                <div class="row">
+                    <div class="col-12" id="chart-bins-volume" style="height: 400px;">Bins Volume</div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="nav-percentage" role="tabpanel" aria-labelledby="nav-percentage-tab">
+                <div class="row">
+                    <div class="col-12" id="chart-bins-percentage" style="height: 400px;">Bins Percentage</div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="nav-table" role="tabpanel" aria-labelledby="nav-table-tab">
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table table-sm table-bordered" id="table_sc" style="font-size: 12px;">
+                            <thead>
+                            <tr>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer id="footer" class="container-fluid">
+    <%- include('../components/statistics_footer') %>
+</footer>
+<script>
+    /* global basic_info */
+    /* global ipcRenderer */
+    const Highcharts = require('highcharts/highstock')
+    require('highcharts/modules/exporting')(Highcharts);
+    require('highcharts/modules/export-data')(Highcharts);
+    function systemPageLoaded(){
+        if(basic_info['connected']){
+            $('#table_sc thead tr').append('<th style="width: 10%;">BinName</th>')
+            $('#table_sc thead tr').append('<th style="width: 5%;" class="text-center">Total</th>')
+            for(let key in basic_info['scs'])
+            {
+                $('#table_sc thead tr').append('<th style="width: 5%;" class="text-center">' + basic_info['scs'][key]['label'] + '</th>')
+            }
+
+            let requestData=[
+                {'name':'statistics_counter','params':{'per_page':1}},
+            ];
+            ipcRenderer.send("sendRequestToServer", "getStatisticsCounterLast",{},requestData);//send request now
+            setInterval(() => {
+                ipcRenderer.send("sendRequestToServer", "getStatisticsCounterLast",{},requestData);
+            }, 60000);
+        }
+    }
+    ipcRenderer.on("getStatisticsCounterLast", function(e, jsonObject) {
+        if(jsonObject['data']['statistics_counter']['records'].length>0){
+            let shiftInfo=jsonObject['data']['statistics_counter']['records'][0];
+            let shift_starting_time = shiftInfo['created_at_timestamp'];
+            let to_timestamp = moment().unix();
+            let diff = moment(shift_starting_time*1000).minutes()% 3;
+
+            let shift_starting_time_round = shift_starting_time - diff * 60;//- moment(shift_starting_time*1000).seconds();
+
+            // let requestData=[
+            //     {'name':'statistics_bins','params':{'from_timestamp': shift_starting_time_round,'to_timestamp': to_timestamp}},
+            // ];
+            // ipcRenderer.send("sendRequestToServer", "getStatisticsBins",{'update_period':3},requestData);//send request now
+
+            let requestData=[
+                {'name':'statistics_bins_counter','params':{'from_timestamp': shift_starting_time_round,'to_timestamp': to_timestamp}},
+            ];
+            ipcRenderer.send("sendRequestToServer", "getStatisticsBinsCounter",{},requestData);
+        }
+    })
+    ipcRenderer.on('getStatisticsBinsCounter', function (e, jsonObject) {
+
+        let bins_statistics = jsonObject['data']['statistics_bins_counter']['records']
+        let bins=[]
+        for(let i in bins_statistics){
+            let bin_key=(bins_statistics[i]['machine_id']+'_'+bins_statistics[i]['bin_id']);
+            if(basic_info['bins'][bin_key]){
+                let bin=basic_info['bins'][bin_key]
+                bin['recirc']=bins_statistics[i]['recirc'];
+                bin['reject']=0;
+                for(let key in basic_info['scs'])
+                {
+                    bin['sc'+basic_info['scs'][key]['value']]=bins_statistics[i][['sc'+basic_info['scs'][key]['value']]]//assuming only one data because its latest
+                    if(basic_info['scs'][key]['value']!="0"){
+                        console.log()
+                        bin['reject']+=Number(bin['sc'+basic_info['scs'][key]['value']]);
+                    }
+                }
+                bins.push(bin)
+            }
+        }
+        bins.sort((a,b)=> Number(a['sort_manager_id'])-Number(b['sort_manager_id']));
+        console.log(bins)
+        $('#table_sc tbody').empty();
+        for(let i=0;i<bins.length;i++){
+            let html='<tr>' +
+                '<td>' + bins[i]['bin_label'] + '</td>' +
+                '<td class="text-right">' + (Number(bins[i]['reject'])+Number(bins[i]['sc0'])) + '</td>' ;
+            for(let key in basic_info['scs'])
+            {
+                html+='<td class="text-right">' + bins[i]['sc'+basic_info['scs'][key]['value']]+ '</td>' ;
+            }
+            html+='</tr>';
+            $('#table_sc tbody').append(html)
+        }
+
+        //populateChart('bins-detailed','Bins Detailed-Total', chart_categories, chart_series);
+        //populateChart('bins-detailed-percentage', 'Bins Detailed-Percentage (%)', chart_categories, chart_series_percentage);
+
+    });
+    function populateChart(id,title, categories = [], series = []) {
+        Highcharts.chart(id, {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: title
+            },
+            xAxis: {
+                categories: categories
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: ''
+                }
+            },
+            tooltip: {
+                // valueSuffix: title == 'Bins Detailed-Total' ? '' : '%'
+                formatter: function () {
+                    return '<b>' + this.x + '</b><br/>' +
+                        this.series.name + ': ' + this.y + '<br/>' +
+                        'Total: ' + this.point.stackTotal;
+                }
+            },
+            legend: {
+                reversed: true
+            },
+            plotOptions: {
+                series: {
+                    stacking: 'normal',
+                    dataLabels: {
+                        enabled: true
+                    },
+                    cursor: 'pointer',
+                    point: {
+                        events: {
+                            click: function () {
+                                onBarClick(this.category);
+                            },
+                        }
+                    }
+                }
+            },
+            exporting: {
+                enabled: true,
+                buttons: {
+                    contextButton: {
+                        menuItems: ['downloadCSV', 'separator', 'downloadPDF', 'downloadPNG']
+                    }
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            series: series
+        });
+    }
+</script>
