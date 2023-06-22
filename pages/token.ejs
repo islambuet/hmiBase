@@ -211,6 +211,8 @@
         let totalRecords=jsonObject['data']['products_history']['totalRecords'];
         $('#pagination_container').html(getPaginationHtml(totalRecords,params['per_page'],params['page']))
 
+        $('#table_datatable_info').html('Showing '+((params['page']-1) * params['per_page']+1)+' to '+((params['page']* params['per_page'])>totalRecords?totalRecords:(params['page']* params['per_page']))+' of '+totalRecords+' entries');
+
     })
     $(document).on('change','#per_page',function (event){
         current_page=1;
