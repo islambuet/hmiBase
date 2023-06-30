@@ -67,9 +67,9 @@
             let shiftInfo=jsonObject['data']['statistics_counter']['records'][0];
             let shift_starting_time = shiftInfo['created_at_timestamp'];
             let to_timestamp = moment().unix();
-            let diff = moment(shift_starting_time*1000).minutes()% 3;
+            //let diff = moment(shift_starting_time*1000).minutes()% 3;
 
-            let shift_starting_time_round = shift_starting_time - diff * 60;//- moment(shift_starting_time*1000).seconds();
+            let shift_starting_time_round = shift_starting_time - 1;//no need to minus 1 but for safety.
 
             // let requestData=[
             //     {'name':'statistics_bins','params':{'from_timestamp': shift_starting_time_round,'to_timestamp': to_timestamp}},
