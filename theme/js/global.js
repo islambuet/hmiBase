@@ -12,7 +12,7 @@ function startClock(){
     $("#system_display_time").text(now.getHours().toString().padStart(2,"0")+":"+now.getMinutes().toString().padStart(2,"0")+":"+now.getSeconds().toString().padStart(2,"0"))
 }
 function getPaginationHtml(totalRecords,per_page,page){
-    let page_total=Math.ceil(totalRecords/per_page);
+    let page_total=(per_page>0)?Math.ceil(totalRecords/per_page):1;
     let html='<div class="row"><div class="col-12"><ul class="pagination float-right"><li class="page-item'+(page<2?' disabled':'')+'"  data-page="-"><button class="page-link">Previous</button></li>';
     for(let i=1;i<=page_total;i++){
         html+='<li class="page-item'+(page==i?' active':'')+'" data-page="'+i+'"><button class="page-link">'+i+'</button></li>';

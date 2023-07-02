@@ -52,13 +52,10 @@
             <option value="-1">Sorting code...</option>
         </select>
     </div>
-    <div class="col-md-1 pr-0">
-        <button type="button" class="btn btn-primary form-control" id="button_filter">Filter</button>
-    </div>
-    <div class="col-md-2 pr-0">
+    <div class="col-md-4 pr-0">
         <div class="row">
-            <label class="col-md-4 col-form-label pr-0" for="per_page">No of rows</label>
-            <div class="col-md-6 pl-1 pr-0">
+            <label class="col-md-2 col-form-label pr-0" for="per_page">No of rows</label>
+            <div class="col-md-2 pl-1 pr-0">
                 <select class="form-control" id="per_page">
                     <option value="50">50</option>
                     <option value="500">500</option>
@@ -66,6 +63,12 @@
                     <option value="1500">1500</option>
                     <option value="0">All</option>
                 </select>
+            </div>
+            <div class="col-md-4 pr-0">
+                <input type="text" class="form-control" id="text_search_barcode" placeholder="Search Barcode"/>
+            </div>
+            <div class="col-md-2 pr-0">
+                <button type="button" class="btn btn-primary form-control" id="button_filter">Filter</button>
             </div>
         </div>
     </div>
@@ -114,6 +117,7 @@
         //dom: 'Bifrtp',
         dom: '<Bif>rtp',
         paging: false,
+        searching: false,
         buttons: [
             {
                 extend: 'csv',
@@ -177,14 +181,8 @@
             $('#from_date_hour').val((startDate.hour()<10?"0":"")+startDate.hour())
             $('#from_date_minute').val((startDate.minute()<10?"0":"")+startDate.minute())
             $('#from_date').datepicker('update', startDate.format('MM-DD-YYYY'));
-
-            let now=moment();
-            $('#to_date_hour').val((now.hour()<10?"0":"")+now.hour())
-            $('#to_date_minute').val((now.minute()<10?"0":"")+now.minute())
-            $('#to_date').datepicker('update', now.format('MM-DD-YYYY'));
             current_page=1;
             $('#button_filter').trigger('click')
-
         }
         else{
             let error_message = "<b>Please Contact with admin. No Schedule found</b>";
@@ -216,41 +214,11 @@
     })
     $(document).on('change','#per_page',function (event){
         current_page=1;
-        $('#button_filter').trigger('click')
+        filterProduct();
     })
     $(document).on('click','#button_filter',function (event){
-        $("#alert_message_container").hide();
-        let from_timestamp = moment($('#from_date').val()+" "+$("#from_date_hour").val()+":"+$("#from_date_minute").val(), "MM-DD-YYYY HH:mm").unix();
-        let to_timestamp = moment($('#to_date').val()+" "+$("#to_date_hour").val()+":"+$("#to_date_minute").val(), "MM-DD-YYYY HH:mm").unix();
-        if(Number.isInteger(from_timestamp) && Number.isInteger(to_timestamp)){
-            if(basic_info['connected']) {
-                let requestData = [
-                    {
-                        'name': 'products_history',
-                        'params': {
-                            'reason': $('#filter_sorting_code').val(),
-                            'from_timestamp': from_timestamp,
-                            'to_timestamp': to_timestamp,
-                            'per_page': $('#per_page').val(),
-                            "page": current_page
-                        }
-                    },
-                ];
-                $('#system_loading').show()
-                dataTable.clear().search('').draw();
-                ipcRenderer.send("sendRequestToServer", "getProductsHistory", {}, requestData);
-            }
-            else{
-                let error_message = "<b>Server Not connected</b>";
-                $("#alert_message").html(error_message);
-                $("#alert_message_container").show();
-            }
-        }
-        else{
-            let error_message = "<b>Please select dates correctly</b>";
-            $("#alert_message").html(error_message);
-            $("#alert_message_container").show();
-        }
+        current_page=1;
+        filterProduct();
     })
     $(document).on('click','#pagination_container .page-item:not(".disabled")',function (event){
         let page=$(this).attr('data-page')
@@ -264,6 +232,53 @@
         {
             current_page=page;
         }
-        $('#button_filter').trigger('click')
+        filterProduct();
     })
+    function filterProduct(){
+        $("#alert_message_container").hide();
+        let from_timestamp = moment($('#from_date').val()+" "+$("#from_date_hour").val()+":"+$("#from_date_minute").val(), "MM-DD-YYYY HH:mm").unix();
+        let to_timestamp = moment($('#to_date').val()+" "+$("#to_date_hour").val()+":"+$("#to_date_minute").val(), "MM-DD-YYYY HH:mm").unix();
+        let requestData = [
+            {
+                'name': 'products_history',
+                'params': {
+                    'reason': $('#filter_sorting_code').val(),
+                    'per_page': $('#per_page').val(),
+                    'search_barcode': $('#text_search_barcode').val(),
+                    "page": current_page
+                }
+            },
+        ];
+        let error_message='';
+        if(Number.isInteger(from_timestamp)){
+            requestData[0]['params']['from_timestamp']=from_timestamp;
+            if($('#from_date').val()==''){
+                error_message+="No From Date Selected.";
+            }
+        }
+        else{
+            error_message+="Invalid From Date";
+        }
+        if(Number.isInteger(to_timestamp)){
+            requestData[0]['params']['to_timestamp']=to_timestamp;
+            if($('#to_date').val()==''){
+                error_message+="No To Date Selected.";
+            }
+        }
+        if(error_message==''){
+            if(basic_info['connected']) {
+                $('#system_loading').show()
+                dataTable.clear().search('').draw();
+                ipcRenderer.send("sendRequestToServer", "getProductsHistory", {}, requestData);
+            }
+            else{
+                $("#alert_message").html("<b>Server Not connected</b>");
+                $("#alert_message_container").show();
+            }
+        }
+        else{
+            $("#alert_message").html(error_message);
+            $("#alert_message_container").show();
+        }
+    }
 </script>
