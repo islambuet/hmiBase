@@ -56,6 +56,55 @@
                 <tbody></tbody>
             </table>
         </div>
+        <h4>Calibration</h4>
+        <table class="table table-sm table-bordered table-striped" style="font-size: 12px;">
+            <thead>
+            <tr>
+                <th></th>
+                <th style="text-align: right;width:22%">Power Turn Entry Pe</th>
+                <th style="text-align: right;width:22%">Reject Pe</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Package 1</td>
+                <td data-counter-id="1" class="counter-value" style="text-align: right"></td>
+                <td data-counter-id="6" class="counter-value" style="text-align: right"></td>
+            </tr>
+            <tr>
+                <td>Package 2</td>
+                <td data-counter-id="2" class="counter-value" style="text-align: right"></td>
+                <td data-counter-id="7" class="counter-value" style="text-align: right"></td>
+            </tr>
+            <tr>
+                <td>Package 3</td>
+                <td data-counter-id="3" class="counter-value" style="text-align: right"></td>
+                <td data-counter-id="8" class="counter-value" style="text-align: right"></td>
+            </tr>
+            <tr>
+                <td>Package 4</td>
+                <td data-counter-id="4" class="counter-value" style="text-align: right"></td>
+                <td data-counter-id="9" class="counter-value" style="text-align: right"></td>
+            </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered table-striped" style="table-layout: fixed">
+            <tbody>
+            <tr>
+                <td>Power Turn Tracking Window</td>
+                <td style="text-align: right;width:22%"><span id="param_value_id_60" ></span><span id="param_unit_id_60"></span></td>
+                <td style="text-align: right;width:22%"><span id="param_value_id_61" ></span><span id="param_unit_id_61"></span></td>
+            </tr>
+            <tr>
+                <td>Reject Position</td>
+                <td style="text-align: right;width:22%"><span id="param_value_id_62" ></span><span id="param_unit_id_62"></span></td>
+                <td>&nbsp;</td>
+            </tr>
+            </tbody>
+        </table>
+        <div style="text-align: end;">
+            <button id="button_calibrate" class="button-device-command button-3d button-rectangle" style="display: none;" data-device-id="87" data-command="0" data-parameter1="0">Calibrate</button>
+        </div>
         <h3>Singulator Parameters</h3>
         <div style="display: block; overflow-y: auto; height: 370px">
             <table class="table table-sm table-bordered table-striped" id="table_parameters_singulator" style="font-size: 12px;">
@@ -91,11 +140,14 @@
             //$('#install_date').text(machine['install_at']);
             $('#install_date').text(moment(machine['install_at']).format('MMM D Y, H:mm:ss'))
         }
+        if(basic_info['currentUser']['role']==1){
+            $("#button_calibrate").show();
+        }
         Object.values(basic_info['parameters']).forEach(item => {
             let html='<tr>' +
                 '<td style="text-align: center">' + item['param_id'] + '</td>' +
                 '<td>' + item['description'] + '</td>' +
-                '<td style="text-align: right" id="value_param_id_'+item['param_id']+'">' + item['value'] + '</td>' +
+                '<td style="text-align: right" id="param_value_id_'+item['param_id']+'">' + item['value'] + '</td>' +
                 '<td>' + item['unit'] + '</td>' +
                 '<td>'+
                 ((basic_info['currentUser']['role'] == 1 || basic_info['currentUser']['role'] == 2) ?
@@ -122,6 +174,8 @@
                 $('#table_parameters_singulator tbody').append(html)
             }
 
+            $('#param_unit_id_'+item['param_id']).text(item['unit'])
+
         });
         if(basic_info['connected']){
             requestMaintParamsData();
@@ -131,6 +185,7 @@
     function requestMaintParamsData(){
         let requestData=[
             {'name':'parameters_value','params':{}},
+            {'name':'counters_current_value','params':{}},
         ];
         ipcRenderer.send("sendRequestToServer", "getMaintParamsData",{},requestData);
     }
@@ -145,10 +200,19 @@
         ipcRenderer.send("sendRequestToServer", "forward_ape_message",params,[]);
     })
     ipcRenderer.on("getMaintParamsData", function(e, jsonObject) {
+        let machine_id=jsonObject['params']['machine_id'];
         for(let key in jsonObject['data']['parameters_value']){
             let parameter_info=jsonObject['data']['parameters_value'][key];
-            $('#value_param_id_'+parameter_info['param_id']).text(parameter_info['value'])
+            $('#param_value_id_'+parameter_info['param_id']).text(parameter_info['value'])
         }
+        let counterData=jsonObject['data']['counters_current_value'];
+        $('.counter-value').each((index, elem) => {
+            let counter_id=$(elem).attr('data-counter-id');
+            if(counterData[machine_id+'_'+counter_id]!=undefined){
+                $(elem).text(counterData[machine_id+'_'+counter_id])
+            }
+        })
+
     })
 
 </script>
