@@ -57,6 +57,22 @@ $(document).on('click','.system_button_mode',function (event){
     };
     ipcRenderer.send("sendRequestToServer", "forward_ape_message",params,[]);
 })
+$(document).on("input", ".float_positive", function(event)
+{
+    this.value = this.value.replace(/[^0-9.]/g, '').replace('.', 'x').replace(/\./g,'').replace('x','.');
+});
+$(document).on("input", ".integer_positive", function(event)
+{
+    this.value = this.value.replace(/[^0-9]/g, '');
+});
+$(document).on("input", ".float_all", function(event)
+{
+    this.value = this.value.replace(/[^0-9.-]/g, '').replace('.', 'x').replace(/\./g,'').replace('x','.').replace(/(?!^)-/g, '');
+});
+$(document).on("input", ".integer_all", function(event)
+{
+    this.value = this.value.replace(/[^0-9-]/g, '').replace(/(?!^)-/g, '');
+});
 $(document).ready(function ()
 {
     //start clock
