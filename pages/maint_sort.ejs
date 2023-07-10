@@ -101,11 +101,11 @@
             $('#container_gapper').show()
         }
         if(basic_info['connected']){
-            requestMaintParamsData();
-            setInterval(() => {requestMaintParamsData()}, 2000);
+            requestPageData();
+            setInterval(() => {requestPageData()}, 2000);
         }
     }
-    function requestMaintParamsData(){
+    function requestPageData(){
         let requestData=[
             {'name':'output_states','params':{}},
             {'name':'counters_current_value','params':{}},
