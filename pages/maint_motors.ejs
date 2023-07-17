@@ -1,0 +1,139 @@
+<div class="row mt-2">
+    <div class="col-12">
+        <div class="alert alert-warning alert-dismissible fade show text-center" id="alert_message_container" role="alert" style="display: none;">
+            <p class="mb-0" id="alert_message">Invalid Speed.Range[min: <span id="speed_min"></span> max: <span id="speed_max"></span>]</p>
+            <button type="button" class="close alert-close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-2">
+    <div class="col-12">
+        <table class="table table-sm table-bordered table-striped" id="table_motor">
+            <thead>
+            <tr>
+                <th style="width: 75px;">Motor ID</th>
+                <th style="">Motor name</th>
+                <th style="">Motor location</th>
+                <th style="">IP Address</th>
+                <th style="">Speed</th>
+                <th style="">Nominal Speed</th>
+                <th style="width: 150px;">Connection Status</th>
+                <th style="width: 135px;">Fault</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+
+<footer id="footer" class="container-fluid">
+    <%- include('../components/maint_footer') %>
+</footer>
+<script>
+    /* global basic_info */
+    /* global ipcRenderer */
+    let dataTable = jQuery('#table_motor').DataTable({
+        dom: 'Bfrtip',
+        paging: false,
+        info: false,
+        buttons: [],
+        order: [[0, 'asc']],
+        "columns": [
+            {"orderable": true, className: 'text-right',order:'asc'},
+            null,
+            null,
+            {"orderable": false},
+            {"orderable": false,className: 'text-right'},
+            {"orderable": false,className: 'text-right'},
+            {"orderable": false},
+            {"orderable": false},
+            {"orderable": false}
+        ],
+
+
+    });
+    function systemPageLoaded(){
+        //let currentUser=basic_info['currentUser'];
+        let motor_speed_unit = basic_info['hmiSettings']['motor_speed_unit'];
+        let motors = Object.values(basic_info['motors']);
+        motors.forEach(record => {
+            dataTable.row.add([
+                record['motor_id'],
+                record['motor_name'],
+                record['location'],
+                record['ip_address'],
+                '<span class="motor-speed" data-motor-id="'+record['motor_id']+'">-</span>',
+                (motor_speed_unit=='ft_min')?(record['nominal_speed']*record['coeff']/5.08/1000).toFixed(2)+' ft/min':(record['nominal_speed']/1000*record['coeff']/1000).toFixed(2)+' m/s',
+                '<span class="motor-connection-status" data-motor-id="'+record['motor_id']+'" style="background-color: #9e9e9e; width: 12px;height: 12px; display: inline-flex"></span>',
+                '<span class="motor-fault-status" data-motor-id="'+record['motor_id']+'" style="background-color: #9e9e9e; width: 12px;height: 12px; display: inline-flex"></span>',
+                '<div class="input-group" style="width: 200px;">' +
+                    '<input data-motor-id="'+record['motor_id']+'" type="text" class="float_positive form-control input_motor_speed">' +
+                    '<div class="input-group-append">' +
+                    '<button data-motor-id="'+record['motor_id']+'" class="btn btn-primary btn-sm button_motor_start">Start</button>' +
+                    '<button data-motor-id="'+record['motor_id']+'" class="btn btn-primary btn-sm button_motor_stop ml-1">Stop</button>' +
+                    '</div>' +
+                '</div>',
+                ['1','2','3'].includes(basic_info['currentUser']['role'])?'':"no",
+
+            ]);
+        })
+        dataTable.draw();
+        $(document).on('click','.button_motor_start',function (event){
+            let motor_id = $(this).attr('data-motor-id');
+            let motor=basic_info['motors'][basic_info['selectedMachineId']+'_'+motor_id];
+            if(motor!=undefined){
+                let speedInput=$('.input_motor_speed[data-motor-id='+motor_id+']').val();
+                let speed;
+                let speed_min;
+                let speed_max;
+
+                if (motor_speed_unit == 'ft_min') {
+                    speed = speedInput * 5.08;
+                    speed_min=motor['speed_min']/5.08;
+                    speed_max=motor['speed_max']/5.08;
+                } else {
+                    speed = speedInput * 1000;
+                    speed_min=motor['speed_min']/1000;
+                    speed_max=motor['speed_max']/1000;
+                }
+                speed=parseInt(speed);
+                if(speed<motor['speed_min'] || speed>motor['speed_max']){
+                    $('#alert_message #speed_max').text(speed_max.toFixed(2))
+                    $('#alert_message #speed_min').text(speed_min.toFixed(2))
+                    $('#alert_message_container').show();
+                }
+                else{
+                    $('#alert_message_container').hide();
+                    let params={
+                        'message_id':123,
+                        'device_id':(+motor_id+100),
+                        'command':1,
+                        'parameter1':speed
+                    };
+                    ipcRenderer.send("sendRequestToServer", "forward_ape_message",params,[]);
+                }
+            }
+        })
+        $(document).on('click','.button_motor_stop',function (event){
+            let motor_id = $(this).attr('data-motor-id');
+            let params={
+                'message_id':123,
+                'device_id':(+motor_id+100),
+                'command':0,
+                'parameter1':0
+            };
+            ipcRenderer.send("sendRequestToServer", "forward_ape_message",params,[]);
+        })
+
+        // if(basic_info['connected']){
+        //     requestInputOutputStatus();
+        //     setInterval(() => {requestInputOutputStatus()}, 2000);
+        // }
+    }
+
+</script>

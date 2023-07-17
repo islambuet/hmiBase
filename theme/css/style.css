@@ -1,3 +1,13 @@
+/*bootstrap overwrite*/
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-weight: 300;
+}
+.table-striped > tbody > tr:nth-child(even) > td {
+    background-color: #bfdbfe;
+}
+.table-striped > thead > tr > th {
+    background-color: #e2e8f0;
+}
 /*header*/
 .container-fluid{
     width: 1850px;
@@ -54,6 +64,7 @@ footer {
     left: 0;
     right: 0;
     height: 50px;
+    z-index: 1000;
     background-color: white;
 }
 /*dataTable*/
