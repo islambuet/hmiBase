@@ -137,6 +137,10 @@
     function requestPageData(){
         let requestData=[
             {'name':'machine_mode','params':{}},
+            {'name':'motors_current_speed','params':{}},
+            {'name':'input_states','params':{}},
+            {'name':'active_alarms','params':{}},
+            {'name':'device_states','params':{}}
         ];
         ipcRenderer.send("sendRequestToServer", "getMaintMotorData",{},requestData);
     }
@@ -148,6 +152,78 @@
         else{
             $('.input_motor_speed_container').hide();
         }
+
+        let motor_speeds = jsonObject['data']['motors_current_speed']
+        let motor_speed_unit = basic_info['hmiSettings']['motor_speed_unit'];
+        $('.motor-speed').each((index, elem) => {
+            let motor_id=$(elem).attr('data-motor-id');
+            if(motor_speeds[machine_id+'_'+motor_id]!=undefined){
+                if (motor_speed_unit == 'ft_min') {
+                    $(elem).text((motor_speeds[machine_id+'_'+motor_id]/ 5.08).toFixed(2) + ' ft/min');
+                }
+                else {
+                    $(elem).text((motor_speeds[machine_id+'_'+motor_id]/ 1000).toFixed(2) + ' m/s');
+                }
+
+            }
+        })
+        let input_states=jsonObject['data']['input_states']
+        let device_states=jsonObject['data']['device_states']
+        let active_alarms={};
+        jsonObject['data']['active_alarms'].forEach(alarm => {
+            active_alarms[alarm['alarm_id']+'_'+alarm['alarm_type']]=1;
+        })
+        let inputs=basic_info['inputs']
+        let motors = Object.values(basic_info['motors']);
+        motors.forEach(motor => {
+            let inputActive=false;
+            let alarmActive=false;
+            let cnx='#fff';//not present
+            if(motor['input_id']>0){
+                if(inputs[machine_id+'_'+motor['input_id']] !=undefined){
+                    if((input_states[machine_id+'_'+motor['input_id']]['state'])==inputs[machine_id+'_'+motor['input_id']]['active_state']){
+                        inputActive=true;
+                    }
+                }
+            }
+            if(motor['alarm_id']>0){
+                if(active_alarms[motor['alarm_id']+'_'+motor['alarm_type']]!=undefined){
+                    alarmActive=true;
+                }
+            }
+            if(motor['device_number']>0){
+                if(device_states[machine_id+'_'+motor['device_number']]!=undefined){
+
+
+                    if(device_states[[machine_id+'_'+motor['device_number']]]['state']==1){
+                        cnx='#27e22b';//connected
+                    }
+                    else{
+                        cnx='#f00';//not connnected
+                    }
+                }
+            }
+
+            if(cnx=='#f00' || alarmActive){
+                $('.motor-connection-status[data-motor-id='+motor["motor_id"]+']').css('background-color','#f00');
+                if(alarmActive){
+                    $('.motor-fault-status[data-motor-id='+motor["motor_id"]+']').css('background-color','#f00');
+                }
+                else{
+                    $('.motor-fault-status[data-motor-id='+motor["motor_id"]+']').css('background-color','#fff');
+                }
+            }
+            else{
+                if(inputActive){
+                    $('.motor-connection-status[data-motor-id='+motor["motor_id"]+']').css('background-color','#27e22b');
+                    $('.motor-fault-status[data-motor-id='+motor["motor_id"]+']').css('background-color','#27e22b');
+                }
+                else{
+                    $('.motor-connection-status[data-motor-id='+motor["motor_id"]+']').css('background-color','#fff');
+                    $('.motor-fault-status[data-motor-id='+motor["motor_id"]+']').css('background-color','#fff');
+                }
+            }
+        })
     })
 
 </script>
