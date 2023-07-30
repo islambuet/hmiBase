@@ -24,6 +24,28 @@ function getPaginationHtml(totalRecords,per_page,page){
     html+='<li class="page-item'+(page>=page_total?' disabled':'')+'"  data-page="+"><button class="page-link">Next</button></li></ul></div></div>';
     return html;
 }
+function secondsToDhms(seconds) {
+    seconds = Number(seconds);
+    let d = Math.floor(seconds / (3600*24));
+    let h = Math.floor(seconds % (3600*24) / 3600);
+    let m = Math.floor(seconds % 3600 / 60);
+    let s = Math.floor(seconds % 60);
+
+    let parts = [];
+    let dDisplay = d > 0 ? d + "d" : "";
+    if(dDisplay !== "") parts.push(dDisplay);
+    let hDisplay = h > 0 ? h + "h" : "";
+    if(hDisplay !== "") parts.push(hDisplay);
+    let mDisplay = m > 0 ? m + "m" : "";
+    if(mDisplay !== "") parts.push(mDisplay);
+    let sDisplay = s > 0 ? s + "s" : "";
+    if(sDisplay !== "") parts.push(sDisplay);
+    let returnDhms = parts.join(" ");
+
+    if(returnDhms === "") returnDhms = "0s";
+
+    return returnDhms;
+}
 $(document).on('click','.alert-close',function (event){
     $(this).parent().hide()
 })
