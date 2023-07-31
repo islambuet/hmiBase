@@ -11,7 +11,8 @@ let loggerConfig={
     "appenders": {
         "everything": {
             "type": "file",
-            "filename":"logs/"+("0" +  d.getFullYear()+ "_" + ("0"+(d.getMonth()+1)).slice(-2) + "_" +("0" + d.getDate()).slice(-2)+"_" + ("0" + d.getHours()).slice(-2) + "_" + ("0" + d.getMinutes()).slice(-2)+ "_" + ("0" + d.getSeconds()).slice(-2))+'/logger.log',
+            //"filename":"logs/"+("0" +  d.getFullYear()+ "_" + ("0"+(d.getMonth()+1)).slice(-2) + "_" +("0" + d.getDate()).slice(-2)+"_" + ("0" + d.getHours()).slice(-2) + "_" + ("0" + d.getMinutes()).slice(-2)+ "_" + ("0" + d.getSeconds()).slice(-2))+'/logger.log',
+            "filename":'logs/logger.log',
             "maxLogSize":"10M",
             "layout":{
                 "type": "pattern",
@@ -24,6 +25,7 @@ let loggerConfig={
     }
 }
 log4js.configure(loggerConfig);
+logger.info("HMI Started.");
 
 function getHMISettings(){
     let project_prefix='adta_';
@@ -149,7 +151,7 @@ function connectWithServer () {
     let host=basic_info['hmiSettings']['java_server_ip_address'];
     let port=basic_info['hmiSettings']['java_server_port'];
     console.log(new Date().toString(),":Connecting with Host="+host+" Port="+port);
-    logger.info(new Date().toString(),":Connecting with Host="+host+" Port="+port);
+    logger.info("Connecting with Host="+host+" Port="+port);
     if(!basic_info['connected'] && host && port && port>=0 && port<65536){
         clientSocket.connect(port, host);
     }
@@ -158,13 +160,13 @@ function connectWithServer () {
     }
 }
 function connectClientSocketHandler() {
-    logger.info(new Date().toString(),":Connected with JavaServer");
+    logger.info("Connected with JavaServer");
     basic_info['connected']=true;
     sendRequestToServer({"request" :'basic_info','params':{},"requestData":[]});
 }
 function closeClientSocketHandler () {
     if(basic_info['connected']){
-        logger.error(new Date().toString(),":DisConnected with JavaServer");
+        logger.error("DisConnected with JavaServer");
         changeMenu({'connected':false,'selectedMachineId':0})//or only send disconnect event
     }
     setTimeout(connectWithServer, 2000);
