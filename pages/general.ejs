@@ -12,12 +12,14 @@
 <footer id="footer" class="container-fluid">
     <%- include('../components/general_footer') %>
 </footer>
+<script src="general_layouts/general_functions.js"></script>
 <script>
     /* global basic_info */
     /* global ipcRenderer */
     function systemPageLoaded(){
+        test()
         if(basic_info['connected']){
-            console.log(basic_info)
+            //console.log(basic_info)
         }
     }
 </script>

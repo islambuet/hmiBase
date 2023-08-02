@@ -71,6 +71,44 @@ $(document).on('click','.button-device-command',function (event){
     };
     ipcRenderer.send("sendRequestToServer", "forward_ape_message",params,[]);
 })
+$(document).on('click','.button-device-command-press-release',function (event){
+    let device_id=$(this).attr('data-device-id');
+    let command_start=$(this).attr('data-command-start');
+    let command_end=$(this).attr('data-command-end');
+    let parameter1=$(this).attr('data-parameter1');
+    let started=$(this).attr('data-started');//data-started is not set in the gui
+    let startedColor=$(this).attr('data-started-color');
+    let stoppedColor=$(this).attr('data-stopped-color');
+    if(!startedColor){
+        startedColor='#27e22b';
+    }
+    if(!stoppedColor){
+        stoppedColor='darkgray';
+    }
+
+    if(started==1){
+        let params={
+            'message_id':123,
+            'device_id':device_id,
+            'command':command_end,
+            'parameter1':parameter1
+        };
+        ipcRenderer.send("sendRequestToServer", "forward_ape_message",params,[]);
+        $(this).attr('data-started',0);
+        $(this).css('background-color',stoppedColor);
+    }
+    else{
+        let params={
+            'message_id':123,
+            'device_id':device_id,
+            'command':command_start,
+            'parameter1':parameter1
+        };
+        ipcRenderer.send("sendRequestToServer", "forward_ape_message",params,[]);
+        $(this).attr('data-started',1);
+        $(this).css('background-color',startedColor);
+    }
+});
 $(document).on('click','.system_button_mode',function (event){
     $(this).hide();
     let params={
