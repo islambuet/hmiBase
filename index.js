@@ -162,7 +162,11 @@ function connectWithServer () {
 function connectClientSocketHandler() {
     logger.info("Connected with JavaServer");
     basic_info['connected']=true;
-    sendRequestToServer({"request" :'basic_info','params':{},"requestData":[]});
+    //immediate sending request does not receive by server
+    setTimeout(function (){
+        sendRequestToServer({"request" :'basic_info','params':{},"requestData":[]});
+    }, 100);
+
 }
 function closeClientSocketHandler () {
     if(basic_info['connected']){
