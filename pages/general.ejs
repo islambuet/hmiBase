@@ -1,27 +1,45 @@
 <div class="row">
     <div class="col-12">
-        <%- include('../general_layouts/'+system_general_layout_no+'/general.svg') %>
-        <%- include('../general_layouts/'+system_general_layout_no+'/common_html.ejs') %>
+        <%- include('../components/general/'+system_general_layout_no+'/general.svg') %>
+        <%- include('../components/general/'+system_general_layout_no+'/common_html.ejs') %>
     </div>
 </div>
 <div class="row m-0">
     <div class="col-lg-12 pt-0 pb-0 pl-2 pr-2 mt-2">
-        <%- include('../components/active_alarm_content') %>
+        <%- include('../components/general/active_alarm_content') %>
     </div>
 </div>
 <footer id="footer" class="container-fluid">
-    <%- include('../components/general_footer') %>
+    <%- include('../components/general/general_footer') %>
 </footer>
-<script src="general_layouts/general_functions.js"></script>
+<script src="components/general/general_functions.js"></script>
 <script>
     /* global basic_info */
     /* global ipcRenderer */
     function systemPageLoaded(){
         $('[data-toggle="tooltip"]').tooltip();
+        setActiveAlarmSettings(basic_info['hmiSettings']);//general_functions
         setBinsLabel(basic_info['bins'],basic_info['hmiSettings']['general_layout_no']);//general_functions
         setPhotoeyesLabel(basic_info['inputs']);//general_functions
+        setConveyorsLabel(basic_info['conveyors']);//general_functions
         if(basic_info['connected']){
-            //console.log(basic_info)
+            let requestData=[
+                {'name':'output_states','params':{}},
+            ];
+            ipcRenderer.send("sendRequestToServer", "getIoOutputStates",{},requestData);
         }
     }
+    ipcRenderer.on("getIoOutputStates", function(e, jsonObject) {
+        setTestButtonsStatus(jsonObject['data']['output_states'],basic_info['selectedMachineId']);
+        let requestData=[
+            {'name':'active_alarms','params':{}},
+        ];
+        ipcRenderer.send("sendRequestToServer", "getGeneralViewData",{},requestData);
+        setInterval(() => {
+            ipcRenderer.send("sendRequestToServer", "getGeneralViewData",{},requestData);
+        }, 1000);
+    })
+    ipcRenderer.on("getGeneralViewData", function(e, jsonObject) {
+        setActiveAlarms(basic_info['alarms'],jsonObject['data']['active_alarms'],basic_info['selectedMachineId']);//general_functions
+    })
 </script>
