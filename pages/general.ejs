@@ -17,7 +17,9 @@
     /* global basic_info */
     /* global ipcRenderer */
     function systemPageLoaded(){
-        test()
+        $('[data-toggle="tooltip"]').tooltip();
+        setBinsLabel(basic_info['bins'],basic_info['hmiSettings']['general_layout_no']);//general_functions
+        setPhotoeyesLabel(basic_info['inputs']);//general_functions
         if(basic_info['connected']){
             //console.log(basic_info)
         }
