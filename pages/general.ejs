@@ -32,6 +32,9 @@
     ipcRenderer.on("getIoOutputStates", function(e, jsonObject) {
         setTestButtonsStatus(jsonObject['data']['output_states'],basic_info['selectedMachineId']);
         let requestData=[
+            {'name':'bin_states','params':{}},
+            {'name':'conveyor_states','params':{}},
+            {'name':'input_states','params':{}},
             {'name':'active_alarms','params':{}},
         ];
         ipcRenderer.send("sendRequestToServer", "getGeneralViewData",{},requestData);
@@ -41,5 +44,7 @@
     })
     ipcRenderer.on("getGeneralViewData", function(e, jsonObject) {
         setActiveAlarms(basic_info['alarms'],jsonObject['data']['active_alarms'],basic_info['selectedMachineId']);//general_functions
+        //setBinsStates(basic_info['bins'],jsonObject['data']['bin_states'],basic_info['selectedMachineId']);//general_functions
+        //console.log(jsonObject)
     })
 </script>

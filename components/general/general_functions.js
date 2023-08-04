@@ -151,3 +151,8 @@ function setActiveAlarms(alarms,active_alarms,machine_id){
         $("#table_active_alarms tbody").append(html);
     }
 }
+
+function setBinsStates(bins,bin_states,machine_id){
+    console.log(bins,bin_states,machine_id)
+
+}
