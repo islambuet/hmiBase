@@ -13,14 +13,12 @@ $('#switch_legend_production').change(function () {
     }
 });
 function setActiveAlarmSettings(hmiSettings){
-    console.log(hmiSettings)
     if(hmiSettings['detailed_active_alarm'] ==1){
         $('#table_active_alarms').show()
         $('#container_ticker_active_alarms').hide()
     }
     else{
         $('#table_active_alarms').hide()
-        $('#table_active_alarms').show()
         $('#container_ticker_active_alarms').show()
     }
 }
@@ -94,10 +92,18 @@ function setTestButtonsStatus(outputStates,machine_id){
     }
 }
 /* global secondsToDhms */
+let ticker_active_alarms = $('#ticker_active_alarms').newsTicker({
+    row_height: 100,
+    max_rows: 2,
+    duration: 4000,
+    pauseOnHover: 0
+});
+let ticker_data_current = []
 function setActiveAlarms(alarms,active_alarms,machine_id){
     let now_timestamp=moment().unix();
     let alarm_class_names = {"0" : "Error", "1" : "Warning", "2" : "Message"};
     $("#table_active_alarms tbody").empty();
+    let tickers_data_new = [];
     if(active_alarms.length>0){
         for(let i=0;(i<active_alarms.length && i<5);i++){
             let key=machine_id+'_'+active_alarms[i]['alarm_id']+'_'+active_alarms[i]['alarm_type'];
@@ -111,8 +117,37 @@ function setActiveAlarms(alarms,active_alarms,machine_id){
                     '<td>' + alarms[key]['variable_name'] + '</td>' +
                     '</tr>';
                 $("#table_active_alarms tbody").append(html);
+                tickers_data_new.push(alarms[key]['description']);
             }
         }
     }
+    let ticker_data_count = tickers_data_new.length;
+    if(ticker_data_count>0){
+        if(tickers_data_new.sort().join(',') !== ticker_data_current.sort().join(',')){
+            $('#ticker_active_alarms').empty();
+            ticker_active_alarms.newsTicker('pause');
+            ticker_data_current=tickers_data_new;
+            if(ticker_data_count == 1){
+                let html = '<li class="ticker-single-item">' + ticker_data_current[0] + '</li>';
+                $("#ticker_active_alarms").append(html);
+            }
+            else {
+                ticker_data_current.forEach(elem => {
+                    let html = '<li>' + elem + '</li>';
+                    $("#ticker_active_alarms").append(html);
+                });
+                if(ticker_data_count>2){
+                    ticker_active_alarms.newsTicker('unpause');
+                }
+            }
+        }
+    }
+    else{
+        ticker_data_current=[]
+        $('#ticker_active_alarms').empty();
+        ticker_active_alarms.newsTicker('pause');
 
+        let html = '<tr><td colspan="6">No active alarm to display</td></tr>';
+        $("#table_active_alarms tbody").append(html);
+    }
 }
