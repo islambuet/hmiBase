@@ -272,6 +272,14 @@ function setEstopsStates(input_states){
         }
     }
 }
+function setMotorsLabel(){
+    for(let key in basic_info['motors']){
+        let motor=basic_info['motors'][key];
+        if(motor['gui_id']>0){
+            $('.motor[gui-motor-id='+motor["gui_id"]+']').attr('motor-id',motor["motor_id"]).attr('data-original-title',motor['motor_name']+'<br>'+motor['ip_address']+'<br>Loc: '+motor['location']).show();
+        }
+    }
+}
 function setPhotoeyesStates(input_states){
     let input_colors = {"in-active" : "#39b54a", "active" : "#f7931e"};
     for(let key in basic_info['inputs']){
