@@ -76,6 +76,24 @@ function setConveyorsLabel(){
         })
     }
 }
+function setDevicesLabel(){
+    let devices=basic_info['devices'];
+    for(let key in devices){
+        let device=devices[key];
+        if(device['gui_id']>0 ){
+            $('.device[gui-device-id='+device["gui_id"]+']').attr('device-id',device["device_id"]).attr('data-original-title',device['device_name']+'<br>'+device['ip_address']).show();
+        }
+    }
+}
+function setEstopsLabel(){
+    let inputs=basic_info['inputs']
+    for(let key in inputs){
+        let input=inputs[key];
+        if((input['input_type']==3) && input['gui_id']>0 &&  (input['device_type']==0) && (input['device_number']==0) ){
+            $('.estop[gui-input-id='+input["gui_id"]+']').attr('input-id',input["input_id"]).attr('data-original-title',input['electrical_name']+'<br>'+input['description']).show();
+        }
+    }
+}
 function setPhotoeyesLabel(){
     let inputs=basic_info['inputs']
     if(inputs!=undefined){
@@ -181,6 +199,19 @@ function setConveyorsStates(conveyor_states){
         $('.conveyor[conveyor-id='+conveyor_states[key]['conveyor_id']+'] .status').css('fill',conveyor_colors[conveyor_states[key]['state']]);
     }
 }
+function setDevicesStates(device_states){
+    let device_colors = {"0" : "#f00", "1" : "#27e22b"};
+    for(let key in basic_info['devices']){
+        let device=basic_info['devices'][key];
+        if(device['gui_id']>0 ){
+            let state=0;
+            if(device_states[key]!=undefined){
+                state=device_states[key]['state'];
+            }
+            $('.device[device-id='+device["device_id"]+'] .status').css('fill',device_colors[state]);
+        }
+    }
+}
 function setDoorsStates(input_states){
     let machine_id=basic_info['selectedMachineId'];
     $('.door').hide();//hide all buttons
@@ -223,6 +254,22 @@ function setDoorsStates(input_states){
             $('.door-open[data-device-id='+(+door_no+90)+']').show();
         }
 
+    }
+}
+function setEstopsStates(input_states){
+    let input_colors = {"in-active" : "#00ff00", "active" : "#ff0000"};
+    for(let key in basic_info['inputs']){
+        let input=basic_info['inputs'][key];
+        if((input['input_type']==3) && input['gui_id']>0 &&  (input['device_type']==0) && (input['device_number']==0) ){
+            let state='in-active'
+            if(input_states[key] !=undefined){
+                if(input['active_state']==input_states[key]['state']){
+                    state='active'
+                }
+            }
+            $('.estop[input-id='+input["input_id"]+'] .status').css('fill',input_colors[state]);
+
+        }
     }
 }
 function setPhotoeyesStates(input_states){
