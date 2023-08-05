@@ -2,7 +2,7 @@ const { app, BrowserWindow, Menu,ipcMain } = require('electron')
 const ejse = require('ejs-electron');
 const electronStore = require('electron-store');
 const store=new electronStore();
-
+const shutdown = require('electron-shutdown-command');
 const net = require('net');
 const log4js = require("log4js");
 const logger = log4js.getLogger();
@@ -51,8 +51,9 @@ let basic_info={
 }
 
 let mainWindow;
-let nativeMenus = [
-    {
+function getMenu(){
+    let menuItems=[];
+    menuItems[0]={
         label: 'Help',
         submenu: [
             {
@@ -68,18 +69,35 @@ let nativeMenus = [
                 }
             }
         ]
-    },
-];
-if(!app.isPackaged)
-{
-    nativeMenus.push({
-        label: 'Dev Tools',
-        click() {
-            mainWindow.webContents.openDevTools();
+    }
+    if(basic_info['currentUser']['role']>0){
+        menuItems[0]['submenu'][2]={
+            label: 'Logout',
+            click() {
+                logoutUser();
+            }
         }
-    })
+    }
+    if((!app.isPackaged) || (basic_info['currentUser']['role']==1))
+    {
+        menuItems[1]={
+            label: 'Dev Tools',
+            click() {
+                mainWindow.webContents.openDevTools();
+            }
+        }
+    }
+    if((basic_info['currentUser']['role']>0)&&(basic_info['currentUser']['role']<4)){
+        menuItems[2]={
+            label: 'Shutdown',
+            click() {
+                shutdown.shutdown();
+            }
+        }
+    }
+    return menuItems;
 }
-let menu = Menu.buildFromTemplate(nativeMenus)
+let menu = Menu.buildFromTemplate(getMenu())
 Menu.setApplicationMenu(menu)
 
 const createWindow = () => {
@@ -112,13 +130,17 @@ function changeMenu(params){
     mainWindow.loadFile('index.ejs').then(function (){});
 }
 function logoutUser() {
+    mainWindow.closable=false;
     let params={
         'machine_id':basic_info['selectedMachineId'],
         'message_id':120,
         'mode':0
     };
     sendRequestToServer({"request" :'forward_ape_message','params':params,"requestData":[]});
-    changeMenu({'currentUser':unRegisteredUser})
+    basic_info['currentUser']=unRegisteredUser;
+    menu = Menu.buildFromTemplate(getMenu());
+    Menu.setApplicationMenu(menu);
+    changeMenu({'currentMenu':settingsPage})
 }
 ipcMain.on("sendRequestToIpcMain", function(e, responseName,params={}) {
     if(responseName=='basic_info'){
@@ -253,7 +275,10 @@ function processReceivedJsonObjects(jsonObject) {
     else if(request=='getLoginUser'){
         if(jsonObject['data']['status']){
             let currentUser=jsonObject['data']['user'];
-            changeMenu({'currentMenu':settingsPage,'currentUser':currentUser})
+            basic_info['currentUser']=currentUser;
+            menu = Menu.buildFromTemplate(getMenu());
+            Menu.setApplicationMenu(menu);
+            changeMenu({'currentMenu':settingsPage})
         }
         mainWindow.webContents.send(request,jsonObject);
     }
