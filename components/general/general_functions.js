@@ -2,6 +2,7 @@
  * Created by Shaiful Islam on 2023-08-02.
  */
 // ---------------
+/* global basic_info */
 $('#switch_legend_production').change(function () {
     if ($(this).is(":checked")) {
         $('#svg_general_colors').hide();
@@ -12,7 +13,8 @@ $('#switch_legend_production').change(function () {
 
     }
 });
-function setActiveAlarmSettings(hmiSettings){
+function setActiveAlarmSettings(){
+    let hmiSettings= basic_info['hmiSettings']
     if(hmiSettings['detailed_active_alarm'] ==1){
         $('#table_active_alarms').show()
         $('#container_ticker_active_alarms').hide()
@@ -22,7 +24,9 @@ function setActiveAlarmSettings(hmiSettings){
         $('#container_ticker_active_alarms').show()
     }
 }
-function setBinsLabel(bins,layoutNo){
+function setBinsLabel(){
+    let bins=basic_info['bins']
+    let layoutNo=basic_info['hmiSettings']['general_layout_no']
     if(bins!=undefined){
         let num_bins=Math.max(...Object.values(bins).map(bin => bin['gui_id']!='999'?bin['gui_id']:0), 0);
         let bin_width=0;
@@ -61,16 +65,8 @@ function setBinsLabel(bins,layoutNo){
 
     }
 }
-function setPhotoeyesLabel(inputs){
-    if(inputs!=undefined){
-        Object.values(inputs).forEach(record => {
-            if(record['gui_id']>0 && (record['input_type']==0)&& (record['device_type']==0)&& (record['device_number']==0) ){
-                $('.photoeye[gui-input-id='+record['gui_id']+']').attr('input-id',record['input_id']).attr('data-original-title',record['electrical_name']+'<br>'+record['description']).show();
-            }
-        })
-    }
-}
-function setConveyorsLabel(conveyors){
+function setConveyorsLabel(){
+    let conveyors=basic_info['conveyors'];
     if(conveyors!=undefined){
         Object.values(conveyors).forEach(record => {
             if(record['gui_id']>0){
@@ -80,7 +76,18 @@ function setConveyorsLabel(conveyors){
         })
     }
 }
-function setTestButtonsStatus(outputStates,machine_id){
+function setPhotoeyesLabel(){
+    let inputs=basic_info['inputs']
+    if(inputs!=undefined){
+        Object.values(inputs).forEach(record => {
+            if(record['gui_id']>0 && (record['input_type']==0)&& (record['device_type']==0)&& (record['device_number']==0) ){
+                $('.photoeye[gui-input-id='+record['gui_id']+']').attr('input-id',record['input_id']).attr('data-original-title',record['electrical_name']+'<br>'+record['description']).show();
+            }
+        })
+    }
+}
+function setTestButtonsStatus(outputStates){
+    let machine_id=basic_info['selectedMachineId'];
     if(outputStates[machine_id+"_49"] && outputStates[machine_id+"_49"]['state']==1){
         $("#btn-test-red-light").attr('data-started',1).css('background-color',$("#btn-test-red-light").attr('data-started-color'));
     }
@@ -99,7 +106,9 @@ let ticker_active_alarms = $('#ticker_active_alarms').newsTicker({
     pauseOnHover: 0
 });
 let ticker_data_current = []
-function setActiveAlarms(alarms,active_alarms,machine_id){
+function setActiveAlarms(active_alarms){
+    let alarms=basic_info['alarms']
+    let machine_id=basic_info['selectedMachineId'];
     let now_timestamp=moment().unix();
     let alarm_class_names = {"0" : "Error", "1" : "Warning", "2" : "Message"};
     $("#table_active_alarms tbody").empty();
@@ -151,8 +160,18 @@ function setActiveAlarms(alarms,active_alarms,machine_id){
         $("#table_active_alarms tbody").append(html);
     }
 }
-
-function setBinsStates(bins,bin_states,machine_id){
-    console.log(bins,bin_states,machine_id)
-
+function setBinsStates(bin_states){
+    let bin_state_colors=basic_info['bin_state_colors'];
+    for(let bin_key in bin_states){
+        let bin_color='#27e22b';
+        for(let i=0;i<bin_state_colors.length;i++)
+        {
+            let bin_state_color=bin_state_colors[i];
+            if(bin_states[bin_key][bin_state_color['name']]==1){
+                bin_color=bin_state_color['color_active'];
+                break;
+            }
+        }
+        $('.bin[bin-key='+bin_key+'] rect').css('fill',bin_color);
+    }
 }

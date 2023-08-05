@@ -18,10 +18,10 @@
     /* global ipcRenderer */
     function systemPageLoaded(){
         $('[data-toggle="tooltip"]').tooltip();
-        setActiveAlarmSettings(basic_info['hmiSettings']);//general_functions
-        setBinsLabel(basic_info['bins'],basic_info['hmiSettings']['general_layout_no']);//general_functions
-        setPhotoeyesLabel(basic_info['inputs']);//general_functions
-        setConveyorsLabel(basic_info['conveyors']);//general_functions
+        setActiveAlarmSettings();//general_functions
+        setBinsLabel();//general_functions
+        setPhotoeyesLabel();//general_functions
+        setConveyorsLabel();//general_functions
         if(basic_info['connected']){
             let requestData=[
                 {'name':'output_states','params':{}},
@@ -30,21 +30,21 @@
         }
     }
     ipcRenderer.on("getIoOutputStates", function(e, jsonObject) {
-        setTestButtonsStatus(jsonObject['data']['output_states'],basic_info['selectedMachineId']);
+        setTestButtonsStatus(jsonObject['data']['output_states']);
         let requestData=[
             {'name':'bin_states','params':{}},
             {'name':'conveyor_states','params':{}},
             {'name':'input_states','params':{}},
             {'name':'active_alarms','params':{}},
         ];
+        console.log()
         ipcRenderer.send("sendRequestToServer", "getGeneralViewData",{},requestData);
         setInterval(() => {
             ipcRenderer.send("sendRequestToServer", "getGeneralViewData",{},requestData);
         }, 1000);
     })
     ipcRenderer.on("getGeneralViewData", function(e, jsonObject) {
-        setActiveAlarms(basic_info['alarms'],jsonObject['data']['active_alarms'],basic_info['selectedMachineId']);//general_functions
-        //setBinsStates(basic_info['bins'],jsonObject['data']['bin_states'],basic_info['selectedMachineId']);//general_functions
-        //console.log(jsonObject)
+        setActiveAlarms(jsonObject['data']['active_alarms']);//general_functions
+        setBinsStates(jsonObject['data']['bin_states']);//general_functions
     })
 </script>
