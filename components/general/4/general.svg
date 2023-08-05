@@ -120,167 +120,167 @@
   </g>
 
 
-  <g class="cursor-pointer bin" gui-bin-id="1" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="1" bin-id="0">
     <rect class="bin-fill" x="1650" y="520" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="545" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="2" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="2" bin-id="0">
     <rect class="bin-fill" x="1650" y="445" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="470" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="3" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="3" bin-id="0">
     <rect class="bin-fill" x="1650" y="520" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="545" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="4" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="4" bin-id="0">
     <rect class="bin-fill" x="1650" y="445" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="470" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="5" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="5" bin-id="0">
     <rect class="bin-fill" x="1650" y="520" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="545" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="6" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="6" bin-id="0">
     <rect class="bin-fill" x="1650" y="445" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="470" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="7" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="7" bin-id="0">
     <rect class="bin-fill" x="1650" y="520" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="545" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="8" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="8" bin-id="0">
     <rect class="bin-fill" x="1650" y="445" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="470" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="9" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="9" bin-id="0">
     <rect class="bin-fill" x="1650" y="520" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="545" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="10" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="10" bin-id="0">
     <rect class="bin-fill" x="1650" y="445" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="470" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="11" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="11" bin-id="0">
     <rect class="bin-fill" x="1650" y="520" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="545" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="12" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="12" bin-id="0">
     <rect class="bin-fill" x="1650" y="445" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="470" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="13" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="13" bin-id="0">
     <rect class="bin-fill" x="1650" y="520" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="545" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="14" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="14" bin-id="0">
     <rect class="bin-fill" x="1650" y="445" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="470" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="15" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="15" bin-id="0">
     <rect class="bin-fill" x="1650" y="520" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="545" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="16" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="16" bin-id="0">
     <rect class="bin-fill" x="1650" y="445" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="470" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="17" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="17" bin-id="0">
     <rect class="bin-fill" x="1650" y="520" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="545" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="18" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="18" bin-id="0">
     <rect class="bin-fill" x="1650" y="445" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="470" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="19" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="19" bin-id="0">
     <rect class="bin-fill" x="1650" y="520" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="545" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="20" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="20" bin-id="0">
     <rect class="bin-fill" x="1650" y="445" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="470" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="21" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="21" bin-id="0">
     <rect class="bin-fill" x="1650" y="520" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="545" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="22" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="22" bin-id="0">
     <rect class="bin-fill" x="1650" y="445" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="470" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="23" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="23" bin-id="0">
     <rect class="bin-fill" x="1650" y="520" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="545" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="24" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="24" bin-id="0">
     <rect class="bin-fill" x="1650" y="445" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="470" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="25" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="25" bin-id="0">
     <rect class="bin-fill" x="1650" y="520" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="545" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="26" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="26" bin-id="0">
     <rect class="bin-fill" x="1650" y="445" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="470" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="27" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="27" bin-id="0">
     <rect class="bin-fill" x="1650" y="520" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="545" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="28" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="28" bin-id="0">
     <rect class="bin-fill" x="1650" y="445" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="470" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="29" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="29" bin-id="0">
     <rect class="bin-fill" x="1650" y="520" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="545" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="30" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="30" bin-id="0">
     <rect class="bin-fill" x="1650" y="445" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="470" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="31" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="31" bin-id="0">
     <rect class="bin-fill" x="1650" y="520" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="545" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="32" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="32" bin-id="0">
     <rect class="bin-fill" x="1650" y="445" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="470" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="33" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="33" bin-id="0">
     <rect class="bin-fill" x="1650" y="520" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="545" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="34" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="34" bin-id="0">
     <rect class="bin-fill" x="1650" y="445" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="470" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="35" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="35" bin-id="0">
     <rect class="bin-fill" x="1650" y="520" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="545" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="36" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="36" bin-id="0">
     <rect class="bin-fill" x="1650" y="445" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="470" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="37" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="37" bin-id="0">
     <rect class="bin-fill" x="1650" y="520" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="545" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="38" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="38" bin-id="0">
     <rect class="bin-fill" x="1650" y="445" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="470" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="39" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="39" bin-id="0">
     <rect class="bin-fill" x="1650" y="520" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="545" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="cursor-pointer bin" gui-bin-id="40" bin-key="0_0">
+  <g class="cursor-pointer bin" gui-bin-id="40" bin-id="0">
     <rect class="bin-fill" x="1650" y="445" width="65" height="40" rx="4" ry="4"></rect>
     <text x="1663" y="470" font-size="12" font-weight="700" fill="#404041"><tspan class="bin-label"></tspan></text>
   </g>
-  <g class="bin" gui-bin-id="999" bin-key="0_0">
+  <g class="bin" gui-bin-id="999" bin-id="0">
     <rect class="bin-fill" x="8" y="470" width="40" height="60" rx="4" ry="4"></rect>
     <text font-size="12" font-weight="700" fill="#404041" transform="translate(30,518) rotate(-90)" ><tspan class="bin-label"></tspan></text>
   </g>

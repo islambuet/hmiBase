@@ -59,7 +59,7 @@ function setBinsLabel(){
                     $('.bin[gui-bin-id='+bins[key]['gui_id']+'] text').attr('x',posText);
                 }
                 $('.bin[gui-bin-id='+bins[key]['gui_id']+'] .bin-label').text(bins[key]['bin_label']);
-                $('.bin[gui-bin-id='+bins[key]['gui_id']+']').attr('bin-key',key).show();
+                $('.bin[gui-bin-id='+bins[key]['gui_id']+']').attr('bin-id',bins[key]['bin_id']).show();
             }
         }
 
@@ -172,6 +172,27 @@ function setBinsStates(bin_states){
                 break;
             }
         }
-        $('.bin[bin-key='+bin_key+'] rect').css('fill',bin_color);
+        $('.bin[bin-id='+bin_states[bin_key]['bin_id']+'] rect').css('fill',bin_color);
+    }
+}
+function setConveyorsStates(conveyor_states){
+    let conveyor_colors = { "0" : "#ccc",  "1" : "#27e22b", "2" : "#ffc000", "3" : "red","4":"#87cefa"};
+    for(let key in conveyor_states){
+        $('.conveyor[conveyor-id='+conveyor_states[key]['conveyor_id']+'] .status').css('fill',conveyor_colors[conveyor_states[key]['state']]);
+    }
+}
+function setPhotoeyesStates(input_states){
+    let input_colors = {"in-active" : "#39b54a", "active" : "#f7931e"};
+    for(let key in basic_info['inputs']){
+        let input=basic_info['inputs'][key];
+        if((input['input_type']==0)&&(input['device_type']==0)&&(input['device_number']==0)&& (input['gui_id']>0)){
+            let state='in-active'
+            if(input_states[key]){
+                if(input['active_state']==input_states[key]['state']){
+                    state='active'
+                }
+            }
+            $('.photoeye[input-id='+input["input_id"]+'] .status').css('fill',input_colors[state]);
+        }
     }
 }

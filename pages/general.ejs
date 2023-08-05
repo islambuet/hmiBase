@@ -46,5 +46,7 @@
     ipcRenderer.on("getGeneralViewData", function(e, jsonObject) {
         setActiveAlarms(jsonObject['data']['active_alarms']);//general_functions
         setBinsStates(jsonObject['data']['bin_states']);//general_functions
+        setConveyorsStates(jsonObject['data']['conveyor_states']);//general_functions
+        setPhotoeyesStates(jsonObject['data']['input_states']);//general_functions
     })
 </script>
