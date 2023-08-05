@@ -237,17 +237,17 @@ function processReceivedJsonObjects(jsonObject) {
                 basic_info['selectedMachineId']=basic_info['machines'][key]['machine_id'];
             }
         }
-        // let doors={}
-        // for(let key in basicInfo['inputsInfo']){
-        //     let inputInfo=basicInfo['inputsInfo'][key];
-        //     if(inputInfo['device_type']==6){
-        //         if(!doors[inputInfo['device_number']]){
-        //             doors[inputInfo['device_number']]={}
-        //         }
-        //         doors[inputInfo['device_number']][inputInfo['device_fct']]=inputInfo;
-        //     }
-        // }
-        // basicInfo['doorsInfo']=doors;
+        let doors={}
+        for(let key in basic_info['inputs']){
+            let input=basic_info['inputs'][key];
+            if(input['device_type']==6){
+                if(!doors[input['device_number']]){
+                    doors[input['device_number']]={}
+                }
+                doors[input['device_number']][input['device_fct']]=input;
+            }
+        }
+        basic_info['doors']=doors;
         changeMenu({})
     }
     else if(request=='getLoginUser'){

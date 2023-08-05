@@ -181,6 +181,50 @@ function setConveyorsStates(conveyor_states){
         $('.conveyor[conveyor-id='+conveyor_states[key]['conveyor_id']+'] .status').css('fill',conveyor_colors[conveyor_states[key]['state']]);
     }
 }
+function setDoorsStates(input_states){
+    let machine_id=basic_info['selectedMachineId'];
+    $('.door').hide();//hide all buttons
+    let doors=basic_info['doors']
+    for(let door_no in doors){
+        let door=doors[door_no];
+        let door_closed='in-active';
+        let door_locked='in-active';
+        let door_safe='in-active';
+        if(door[1] !=undefined){
+            if(input_states[machine_id+'_'+door[1]['input_id']] !=undefined){
+                if(input_states[machine_id+'_'+door[1]['input_id']]['state']==door[1]['active_state']){
+                    door_closed='active';
+                }
+            }
+        }
+        if(door[2]){
+            if(input_states[machine_id+'_'+door[2]['input_id']]){
+                if(input_states[machine_id+'_'+door[2]['input_id']]['state']==door[2]['active_state']){
+                    door_locked='active';
+                }
+            }
+        }
+        if(door[3]){
+            if(input_states[machine_id+'_'+door[3]['input_id']]){
+                if(input_states[machine_id+'_'+door[3]['input_id']]['state']==door[3]['active_state']){
+                    door_safe='active';
+                }
+            }
+        }
+        if(door_closed=='active'){
+            if((door_locked=='in-active')&&(door_safe=='in-active')){
+                $('.door-lock[data-device-id='+(+door_no+90)+']').show();
+            }
+            else{
+                $('.door-unlock[data-device-id='+(+door_no+90)+']').show();
+            }
+        }
+        else{
+            $('.door-open[data-device-id='+(+door_no+90)+']').show();
+        }
+
+    }
+}
 function setPhotoeyesStates(input_states){
     let input_colors = {"in-active" : "#39b54a", "active" : "#f7931e"};
     for(let key in basic_info['inputs']){
