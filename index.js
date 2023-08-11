@@ -152,6 +152,20 @@ ipcMain.on("sendRequestToIpcMain", function(e, responseName,params={}) {
     else if(responseName=='logout'){
         logoutUser();
     }
+    else if(responseName=='terminal_command'){
+        let command=params['command'];
+        switch (command){
+            case '#cg%':
+                app.emit('window-all-closed');
+                break;
+            case '#sd%':
+                shutdown.shutdown();
+                break;
+            default:
+                console.log(command)
+                logger.error("Invalid terminal command: "+command)
+        }
+    }
     else if(responseName=='saveSettings'){
         let project_prefix='adta_';
         store.set(project_prefix+"java_server_ip_address", params['java_server_ip_address']);
@@ -308,5 +322,5 @@ app.on('window-all-closed', () => {
         'mode':0
     };
     sendRequestToServer({"request" :'forward_ape_message','params':params,"requestData":[]});
-    app.quit()
+    app.exit()
 })

@@ -62,6 +62,12 @@
         </div>
     </div>
 </form>
+<div class="row">
+    <div class="col-12">
+        <button type="button" id="button_terminal_command" class="btn btn-primary float-right" style="display: none;">Run</button>
+        <input type="text" class="float-right form-control p-0 border-0" id="terminal_command_input" style="width: 200px;">
+    </div>
+</div>
 <script>
     /* global basic_info */
     /* global ipcRenderer */
@@ -111,4 +117,17 @@
     $(document).on('click','#button_changePassword',function (event){
         ipcRenderer.send("sendRequestToIpcMain", "changeMenu",{'currentMenu':{'file':'change_password','title':'Change Password','name':'','members':''}});
     })
+    $(document).on("input", "#terminal_command_input", function(event)
+    {
+        if(['#cg%','#sd%'].includes($('#terminal_command_input').val())){
+            $('#button_terminal_command').show();
+        }
+        else{
+            $('#button_terminal_command').hide();
+        }
+    });
+    $(document).on("click", "#button_terminal_command", function(event)
+    {
+        ipcRenderer.send("sendRequestToIpcMain", "terminal_command",{'command':$('#terminal_command_input').val()});
+    });
 </script>
