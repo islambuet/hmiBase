@@ -148,6 +148,9 @@
         }]
     });
     function systemPageLoaded(){
+        if(!basic_info['hmiSettings']['statistics_show_pie']){
+            $('#switch_pie_sc').trigger('click')
+        }
         let currentUser=basic_info['currentUser'];
         if (currentUser['role'] >0 && currentUser['role'] <4) {
             $('#button_reset').show();
@@ -169,10 +172,12 @@
         if ($(this).is(":checked")) {
             $('#pie-chart').show();
             $('#table_sc').hide();
+            ipcRenderer.send("sendRequestToIpcMain", "saveSettings",{'statistics_show_pie':1});
         }
         else {
             $('#pie-chart').hide();
             $('#table_sc').show();
+            ipcRenderer.send("sendRequestToIpcMain", "saveSettings",{'statistics_show_pie':0});
         }
     });
 

@@ -17,6 +17,10 @@
     /* global basic_info */
     /* global ipcRenderer */
     function systemPageLoaded(){
+        if(!basic_info['hmiSettings']['general_show_production']){
+            $('#switch_legend_production').trigger('click')
+        }
+
         $('[data-toggle="tooltip"]').tooltip();
         setActiveAlarmSettings();//general_functions
         setBinsLabel();//general_functions
