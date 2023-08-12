@@ -39,7 +39,6 @@
             {'name':'statistics_counter','params':{'per_page':1}},
             {'name':'statistics_oee','params':{'per_page':1}},
         ];
-        console.log()
         ipcRenderer.send("sendRequestToServer", "getGeneralViewData",{},requestData);
         setInterval(() => {
             ipcRenderer.send("sendRequestToServer", "getGeneralViewData",{},requestData);

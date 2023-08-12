@@ -130,7 +130,6 @@
             {'name':'machine_mode','params':{}},
             {'name':'motors_current_speed','params':{}},
         ];
-        console.log()
         ipcRenderer.send("sendRequestToServer", "getGeneralViewData",{},requestData);
         setInterval(() => {
             ipcRenderer.send("sendRequestToServer", "getGeneralViewData",{},requestData);

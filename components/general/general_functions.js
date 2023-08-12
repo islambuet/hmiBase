@@ -3,6 +3,7 @@
  */
 // ---------------
 /* global basic_info */
+/* global ipcRenderer */
 $('#switch_legend_production').change(function () {
     if ($(this).is(":checked")) {
         $('#svg_general_colors').hide();
@@ -13,6 +14,21 @@ $('#switch_legend_production').change(function () {
 
     }
 });
+$('.bin.cursor-pointer').on('click',function (){
+    let bin_id=$(this).attr('bin-id');
+    if(basic_info['bins'][basic_info['selectedMachineId']+'_'+bin_id] !=undefined){
+        basic_info['pageParams']={'bin':basic_info['bins'][basic_info['selectedMachineId']+'_'+bin_id]}
+        ipcRenderer.send("sendRequestToIpcMain", "changeMenu",
+            {
+                'currentMenu':{'file':'general_bin_details',
+                'title':'Bins Detail: '+basic_info['pageParams']['bin']['bin_label'],
+                'name':'general_bin_details','members':'general'},
+                'pageParams':basic_info['pageParams']
+            });
+    }
+
+
+})
 function setActiveAlarmSettings(){
     let hmiSettings= basic_info['hmiSettings']
     if(hmiSettings['detailed_active_alarm'] ==1){
